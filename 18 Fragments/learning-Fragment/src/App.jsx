@@ -1,19 +1,18 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import FoodItems from "./components/FoodItems";
+import ErrorMessage from "./components/ErrorMessage";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
 
 function App() {
-  let foodItem = ["Pulses", "Leafy Veggitable", "Milk", "Roti", "Salad"];
+  let foodItems = [
+
+  ];
+
   return (
     <>
       <h1>Healthy Food</h1>
-      <ul class="list-group">
-        {foodItem.map((item) => (
-          <li class="list-group-item">{item}</li>
-        ))}
-      </ul>
+      <ErrorMessage items = {foodItems}></ErrorMessage>
+      <FoodItems items = {foodItems}></FoodItems>
     </>
   );
 }

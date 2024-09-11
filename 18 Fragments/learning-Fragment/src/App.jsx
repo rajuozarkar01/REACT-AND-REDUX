@@ -4,13 +4,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 function App() {
-  let foodItems = [
-
-  ];
+  let foodItems = ["Green Vegetables", "Milk", "Fruits And Nuts", "Roti","Rice", "Wine","Samosa"];
 
   return (
     <>
-      <h1>Healthy Food</h1>
+      <h1 className="dynamic">Healthy Food</h1>
       <ErrorMessage items = {foodItems}></ErrorMessage>
       <FoodItems items = {foodItems}></FoodItems>
     </>

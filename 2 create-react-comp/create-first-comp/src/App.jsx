@@ -1,4 +1,4 @@
-import RjButton from "./RjButton";
+import  RjButton from "./RjButton";
 import Hello from "./Hello";
 import Random from "./Random";
 
@@ -12,6 +12,7 @@ function App() {
       <Random></Random>
       <Random></Random>
       <Random></Random>
+      <RjButton></RjButton>
 
     </div>
   );

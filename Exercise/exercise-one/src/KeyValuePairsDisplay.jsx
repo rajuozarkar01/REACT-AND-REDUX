@@ -26,6 +26,7 @@ function KeyValuePairsDisplay() {
     // This line below assigns the value from the values array to the object keyValuePairs using the current key from the keys array.
     
     keyValuePairs[state] = capital;
+    // keyValuePairs is the dictionary. The brand represents the key in the dictionary, and price is the value being assigned to that key.
   }
   return (
     <div>

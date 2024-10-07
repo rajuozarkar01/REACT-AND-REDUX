@@ -19,7 +19,9 @@ function Mobile() {
     const price = brandPrice[i];
     // This line below assigns the value from the values array to the object 'balanceInAccount'. using the current key from the keys array.
     modelPrice[brand] = price;
-    // console.log({modelPrice});
+    // modelPrice is the dictionary. The brand represents the key in the dictionary, and price is the value being assigned to that key.
+    // console.log({modelPrice})
+
 
   
   }

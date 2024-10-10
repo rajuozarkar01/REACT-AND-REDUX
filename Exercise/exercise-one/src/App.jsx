@@ -9,7 +9,9 @@ import "./App.css";
 import CaruseState from "./CaruseState";
 
 function App() {
-  const sum = ["hi", 89, "parameter"];
+  let a = 12;
+  let b = 9;
+  const sum = a + b;
 
   return (
     <>
@@ -22,7 +24,7 @@ function App() {
       <RjButton></RjButton>
       <KeyValuePairsDisplay></KeyValuePairsDisplay>
       <Mobile></Mobile>
-      <AnonymousFunction str={sum}></AnonymousFunction>
+      <AnonymousFunction str={{sum}}></AnonymousFunction>
       <FavoritColor></FavoritColor>
       <CaruseState></CaruseState>
     </>

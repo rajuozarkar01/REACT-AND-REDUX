@@ -2,6 +2,7 @@ import AppName from "./components/AppName";
 import AddTodo from "./components/AddTodo";
 import TodoItems from "./components/TodoItems";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useState } from "react";
 import "./App.css";
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
       dueDate: "3/9/2024",
     },
   ];
-
+  const [] = useState(todoItems);
   return (
     <>
       <div className="app-main">

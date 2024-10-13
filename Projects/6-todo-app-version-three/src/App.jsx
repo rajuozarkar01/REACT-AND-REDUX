@@ -6,7 +6,7 @@ import { useState } from "react";
 import "./App.css";
 
 function App() {
-  const todoItems = [
+  const initialTodoItems = [
     {
       name: "Buy milk",
       dueDate: "3/9/2024",
@@ -20,7 +20,10 @@ function App() {
       dueDate: "3/9/2024",
     },
   ];
-  const [] = useState(todoItems);
+  const [todoItems, setTodoItems] = useState(initialTodoItems);
+  const handleNewItem = (itemName, itemDueDate) => {
+    console.log(`New Item Added: ${itemName} Date:${itemDueDate}`);
+  };
   return (
     <>
       <div className="app-main">
@@ -28,7 +31,7 @@ function App() {
           <AppName />
         </div>
         <div className="app-container">
-          <AddTodo />
+          <AddTodo onNewItem = {handleNewItem} />
           <div className="items-container">
             <TodoItems todoItems={todoItems}></TodoItems>
           </div>

@@ -1,0 +1,15 @@
+
+
+input {
+  width: 100%;
+}
+
+.rj-button {
+  min-width: 80px;
+}
+.rj-row {
+  margin: 10px;
+}
+/* .app-container{
+  text-align: center;
+} */

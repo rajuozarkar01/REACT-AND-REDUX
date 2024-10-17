@@ -3,6 +3,7 @@ import Hello from "./Hello";
 import Random from "./Random";
 import Checkbox from "./Checkbox";
 import Form from "./Form";
+import FormObject from "./FormObject"
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <RjButton></RjButton>
       <Checkbox></Checkbox>
       <Form></Form>
+      <FormObject></FormObject>
       
     </div>
   );

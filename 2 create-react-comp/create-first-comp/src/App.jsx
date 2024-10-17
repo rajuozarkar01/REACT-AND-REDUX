@@ -11,9 +11,9 @@ function App() {
       <Hello />
       <Random></Random>
       <Random></Random>
+      {/* <Random></Random>
       <Random></Random>
-      <Random></Random>
-      <Random></Random>
+      <Random></Random> */}
       <RjButton></RjButton>
       <Checkbox></Checkbox>
       <Form></Form>

@@ -4,6 +4,7 @@ import Random from "./Random";
 import Checkbox from "./Checkbox";
 import Form from "./Form";
 import FormObject from "./FormObject"
+import TextField from "./TextField"
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Checkbox></Checkbox>
       <Form></Form>
       <FormObject></FormObject>
+      <TextField></TextField>
       
     </div>
   );

@@ -3,8 +3,9 @@ import Hello from "./Hello";
 import Random from "./Random";
 import Checkbox from "./Checkbox";
 import Form from "./Form";
-import FormObject from "./FormObject"
-import TextField from "./TextField"
+import FormObject from "./FormObject";
+import TextField from "./TextField";
+import FormNestedObject from "./FormNestedObject";
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
       <Form></Form>
       <FormObject></FormObject>
       <TextField></TextField>
-      
+      <FormNestedObject></FormNestedObject>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import AddTodo from "./components/AddTodo";
 import TodoItems from "./components/TodoItems";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
-// import WelcomeMessage from "./components/WelcomeMessage";
+import WelcomeMessage from "./components/WelcomeMessage";
 import "./App.css";
 
 function App() {

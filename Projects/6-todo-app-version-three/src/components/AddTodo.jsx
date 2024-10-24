@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { IoMdAdd } from "react-icons/io";
+
 
 function AddTodo({ onNewItem }) {
   const [todoName, setTodoName] = useState();
@@ -38,7 +40,7 @@ function AddTodo({ onNewItem }) {
             className="btn btn-success rj-button"
             onClick={handleAddButtonClicked}
           >
-            Add
+           <IoMdAdd/>
           </button>
         </div>
       </div>

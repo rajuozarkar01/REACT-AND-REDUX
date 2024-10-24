@@ -1,3 +1,5 @@
+import { TbHttpDelete } from "react-icons/tb";
+
 function TodoItem({ todoName, todoDate ,onDeleteClick  }) {
   return (
     <div className="container ">
@@ -8,7 +10,7 @@ function TodoItem({ todoName, todoDate ,onDeleteClick  }) {
           <button type="button" className="btn btn-danger rj-button" onClick={()=>onDeleteClick(todoName)}
             // this is actual event handler not a component 
             >
-            Delete
+        <TbHttpDelete/>
           </button>
         </div>
       </div>

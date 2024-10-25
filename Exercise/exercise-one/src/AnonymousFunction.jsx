@@ -4,4 +4,4 @@ const AnonymousFunction = ({ str }) => {
 export default AnonymousFunction;
 
 
-dosomething(()=>{console.log()});
+// dosomething(()=>{console.log()});

@@ -7,6 +7,7 @@ import FavoritColor from "./FavoritColor";
 import AnonymousFunction from "./AnonymousFunction";
 import "./App.css";
 import CaruseState from "./CaruseState";
+import UseStateRevision from "./UseStateRevision";
 
 function App() {
   let a = 12;
@@ -24,9 +25,10 @@ function App() {
       <RjButton></RjButton>
       <KeyValuePairsDisplay></KeyValuePairsDisplay>
       <Mobile></Mobile>
-      <AnonymousFunction str={{sum}}></AnonymousFunction>
+      <AnonymousFunction str={{ sum }}></AnonymousFunction>
       <FavoritColor></FavoritColor>
       <CaruseState></CaruseState>
+      <UseStateRevision></UseStateRevision>
     </>
   );
 }

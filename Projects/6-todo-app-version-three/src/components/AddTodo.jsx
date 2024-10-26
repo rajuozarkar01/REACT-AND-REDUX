@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 
-
 function AddTodo({ onNewItem }) {
   const [todoName, setTodoName] = useState();
   const [dueDate, setDueDate] = useState();
@@ -13,7 +12,9 @@ function AddTodo({ onNewItem }) {
     setDueDate(event.target.value);
   };
 
-  const handleAddButtonClicked = () => {
+  const handleAddButtonClicked = (event) => {
+    // console.log(event);
+    event.preventDefault(); //don't send by default to server after submit I will handler the value will submit to local method
     onNewItem(todoName, dueDate);
     setDueDate("");
     setTodoName("");
@@ -22,7 +23,7 @@ function AddTodo({ onNewItem }) {
 
   return (
     <div className="container items-container">
-      <div className="row rj-row">
+      <form className="row rj-row" onSubmit={handleAddButtonClicked}>
         <div className="col-6">
           <input
             type="text"
@@ -36,14 +37,16 @@ function AddTodo({ onNewItem }) {
         </div>
         <div className="col-2">
           <button
-            type="button"
+            // type="button"  by default 'submit' type
             className="btn btn-success rj-button"
-            onClick={handleAddButtonClicked}
+            //onSubmit={handleAddButtonClicked}  on submit handler no need to press button by default do.
+            // onClick={handleAddButtonClicked}
+            type="submit" // by default... will call onSubmit handler
           >
-           <IoMdAdd/>
+            <IoMdAdd />
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

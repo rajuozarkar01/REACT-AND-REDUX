@@ -1,23 +1,20 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { IoMdAdd } from "react-icons/io";
 
 function AddTodo({ onNewItem }) {
-  const [todoName, setTodoName] = useState();
-  const [dueDate, setDueDate] = useState();
-
-  const handleNameChange = (event) => {
-    setTodoName(event.target.value);
-  };
-  const handleDateChange = (event) => {
-    setDueDate(event.target.value);
-  };
+  const todoNameElement = useRef();
+  const dueDateElement = useRef();
 
   const handleAddButtonClicked = (event) => {
     // console.log(event);
     event.preventDefault(); //don't send by default to server after submit I will handler the value will submit to local method
+    const todoName = todoNameElement.current.value;
+    const dueDate = dueDateElement.current.value;
+    todoNameElement.current.value = "";
+    dueDateElement.current.value = "";
+
     onNewItem(todoName, dueDate);
-    setDueDate("");
-    setTodoName("");
+
     //time stamp 6:56:56 need to understand
   };
 
@@ -27,13 +24,12 @@ function AddTodo({ onNewItem }) {
         <div className="col-6">
           <input
             type="text"
+            ref={todoNameElement}
             placeholder="Enter Todo Here"
-            value={todoName}
-            onChange={handleNameChange}
           />
         </div>
         <div className="col-4">
-          <input type="date" value={dueDate} onChange={handleDateChange} />
+          <input type="date" ref={dueDateElement} />
         </div>
         <div className="col-2">
           <button

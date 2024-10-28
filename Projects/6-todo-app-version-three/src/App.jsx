@@ -15,6 +15,7 @@ function App() {
       ...todoItems,
       { name: itemName, dueDate: itemDueDate },
     ];
+    
     setTodoItems(newTodoItems);
   };
 

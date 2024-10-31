@@ -4,8 +4,8 @@ import TodoItems from "./components/TodoItems";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
 import WelcomeMessage from "./components/WelcomeMessage";
+import { TodoItemsCnotext } from "./components/store/todo-items-store";
 import "./App.css";
-
 function App() {
   const [todoItems, setTodoItems] = useState([]);
   const handleNewItem = (itemName, itemDueDate) => {
@@ -35,24 +35,18 @@ function App() {
     console.log(`Item Deleted:${todoItemName}`);
   };
   return (
-    <>
+    <TodoItemsContext.Provider>
       <div className="app-main">
-        <div className="app-heading">
-          <AppName />
-        </div>
-        <div className="app-container">
-          <AddTodo onNewItem={handleNewItem} />
-          {todoItems.length === 0 && <WelcomeMessage />}
-          {/* it todoItems empy show welcome message */}
-          <div className="items-container">
-            <TodoItems
-              todoItems={todoItems}
-              onDeleteClick={handleDeleteItem}
-            ></TodoItems>
-          </div>
-        </div>
+        <AppName />
+        <AddTodo onNewItem={handleNewItem} />
+        {todoItems.length === 0 && <WelcomeMessage />}
+        {/* it todoItems empy show welcome message */}
+        <TodoItems
+          todoItems={todoItems}
+          onDeleteClick={handleDeleteItem}
+        ></TodoItems>
       </div>
-    </>
+    </TodoItemsContext.Provider>
   );
 }
 

@@ -4,20 +4,13 @@ import TodoItems from "./components/TodoItems";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
 import WelcomeMessage from "./components/WelcomeMessage";
-import { TodoItemsCnotext } from "./components/store/todo-items-store";
+import { TodoItemsContext } from "./components/store/todo-items-store";
 import "./App.css";
 function App() {
   const [todoItems, setTodoItems] = useState([]);
-  const handleNewItem = (itemName, itemDueDate) => {
-    //   const newTodoItems = [
-    //     ...currValue,
-    //     {name: itemName, dueDate: itemDueDate},
-    //   ];
-    //   return newTodoItems;
-    // });
-    // Compact version is below
 
-    //currValue means 'todoItems' with annonymous meth. to setT
+  //handleNewItem instead addNewItem:: it add's new Item
+  const addNewItem = (itemName, itemDueDate) => {
     setTodoItems((currValue) => {
       const newTodoItems = [
         ...currValue,
@@ -27,7 +20,8 @@ function App() {
     });
   };
 
-  const handleDeleteItem = (todoItemName) => {
+  //handleDeleteItme instead deleteItem: it deletes Item
+  const deleteItem = (todoItemName) => {
     //filter method def. util true/truthy val return item stays if falsy/false val item goes out of arr.(delete)
     const newTodoItems = todoItems.filter((item) => item.name !== todoItemName);
     // !==, because == Item to be Deleted
@@ -35,19 +29,30 @@ function App() {
     console.log(`Item Deleted:${todoItemName}`);
   };
   return (
-    <TodoItemsContext.Provider>
+    // array, object any can be passed as 'value'
+    <TodoItemsContext.Provider
+      // value={{
+      //   todoItems: todoItems,
+      //   addNewItem: addNewItem,
+      //   deleteItem: deleteItem,
+      // }}
+      //key and  value is same then use only one
+      value={{
+        todoItems,
+        addNewItem,
+        deleteItem,
+      }}
+    >
       <div className="app-main">
         <AppName />
-        <AddTodo onNewItem={handleNewItem} />
-        {todoItems.length === 0 && <WelcomeMessage />}
-        {/* it todoItems empy show welcome message */}
-        <TodoItems
-          todoItems={todoItems}
-          onDeleteClick={handleDeleteItem}
-        ></TodoItems>
+        <AddTodo />
+        <WelcomeMessage></WelcomeMessage>
+        <TodoItems></TodoItems>
       </div>
     </TodoItemsContext.Provider>
   );
 }
 
 export default App;
+
+//In This version it provide all three values in Context.Provider in effect previously passed props elemenited and all the component gained their value's from Context.provider

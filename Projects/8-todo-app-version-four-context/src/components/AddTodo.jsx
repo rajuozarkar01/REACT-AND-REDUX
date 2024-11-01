@@ -1,8 +1,14 @@
 import { useState, useRef } from "react";
 import { IoMdAdd } from "react-icons/io";
 import styles from "./AddTodo.module.css"
-
-function AddTodo({ onNewItem }) {
+import { useContext } from "react";
+import { TodoItemsContext } from "./store/todo-items-store";
+// function AddTodo({onNewItem}) {
+//because obj {onNewItem} is now addNewItem
+//it's from Context.Provider Value. addNewItem
+//addNewItem will call everythen onNewItem used
+function AddTodo({}) {
+  const { addNewItem } = useContext(TodoItemsContext);
   const todoNameElement = useRef();
   const dueDateElement = useRef();
 
@@ -14,7 +20,10 @@ function AddTodo({ onNewItem }) {
     todoNameElement.current.value = "";
     dueDateElement.current.value = "";
 
-    onNewItem(todoName, dueDate);
+    // onNewItem(todoName, dueDate);
+    //because obj {onNewItem} is now addNewItem
+    //addNewItem will call everythen onNewItem used
+    addNewItem(todoName, dueDate);
 
     //time stamp 6:56:56 need to understand
   };

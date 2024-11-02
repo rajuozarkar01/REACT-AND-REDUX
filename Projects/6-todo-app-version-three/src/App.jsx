@@ -4,6 +4,7 @@ import TodoItems from "./components/TodoItems";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import { useState } from "react";
+import WelcomeMessage from "./components/WelcomeMessage";
 
 function App() {
   const initialTodoItems = [
@@ -29,6 +30,16 @@ function App() {
     ];
     setTodoItems(newTodoItems);
   };
+
+  const handleDeleteItem = (todoItemName) => {
+    //filter creates new array without chainging existing here: setTodoItems() supposed not to change
+    const newTodoItems = todoItems.filter((item) => item.name !== todoItemName);
+    //onClicked delet button. name will be deleted
+    //!= these item will be in array and will not be deleted
+    //newTodoItems array will be created
+    setTodoItems(newTodoItems);
+    console.log(`Item Deleted: ${todoItemName}`);
+  };
   return (
     <>
       <div className="app-main">
@@ -37,8 +48,12 @@ function App() {
         </div>
         <div className="app-container">
           <AddTodo onNewItem={handleNewItem} />
+          {todoItems.length === 0 && <WelcomeMessage></WelcomeMessage>}
           <div className="items-container">
-            <TodoItems todoItems={todoItems}></TodoItems>
+            <TodoItems
+              todoItems={todoItems}
+              onDeleteClick={handleDeleteItem}
+            ></TodoItems>
           </div>
         </div>
       </div>

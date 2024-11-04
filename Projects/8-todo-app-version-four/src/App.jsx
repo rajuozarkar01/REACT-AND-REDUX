@@ -8,6 +8,7 @@ import { TodoItemsContext } from "./components/store/todo-items-store";
 import "./App.css";
 function App() {
   const [todoItems, setTodoItems] = useState([]);
+  //useReducer intrudueced:04-11 :16:51:00, vdieo:9:19
 
   //handleNewItem instead addNewItem:: it add's new Item
   const addNewItem = (itemName, itemDueDate) => {

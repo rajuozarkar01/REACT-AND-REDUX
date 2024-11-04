@@ -3,7 +3,7 @@ import { TbHttpDelete } from "react-icons/tb";
 import { TodoItemsContext } from "./store/todo-items-store";
 
 // function TodoItem({ todoName, todoDate, onDeleteClick }) { now don't expet onDeleteClick
-function TodoItem({ todoName, todoDate, onDeleteClick }) {
+function TodoItem({ todoName, todoDate }) {
   // deleteItem = useContext(TodoItemsContext)
   //deleteItem from useContext(TodoItemsContext) after de structure
   const { deleteItem } = useContext(TodoItemsContext);

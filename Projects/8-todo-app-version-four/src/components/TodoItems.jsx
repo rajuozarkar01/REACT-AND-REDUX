@@ -6,7 +6,7 @@ const TodoItems = () => {
   // const {contextObj} = useContext(TodoItemsContext);
   // const todoItems = contextObj.todoItems;
   //above code using object destructuring
-  const { todoItems } = useContext(TodoItemsContext);
+  const { todoItems} = useContext(TodoItemsContext);
 
   return (
     <>

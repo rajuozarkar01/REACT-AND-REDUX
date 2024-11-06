@@ -1,0 +1,8 @@
+.rj-button {
+  min-width: 80px;
+  box-shadow: 0 5px 6px rgba(0, 0, 0, 0.3);
+}
+.rj-row {
+  margin: 10px;
+  padding-bottom: 8px;
+}

@@ -1,10 +1,9 @@
 import { useState, useRef } from "react";
 import { IoMdAdd } from "react-icons/io";
-import styles from "./AddTodo.module.css"
+// import styles from "./AddTodo.module.css"
 import { useContext } from "react";
 import { TodoItemsContext } from "./store/todo-items-store";
-// function AddTodo({onNewItem}) {
-//because obj {onNewItem} is now addNewItem
+
 //it's from Context.Provider Value. addNewItem
 //addNewItem will call everythen onNewItem used
 function AddTodo({}) {
@@ -29,7 +28,7 @@ function AddTodo({}) {
   };
 
   return (
-    <div className="container items-container ">
+    <div className="container items-container  ">
       <form className="row rj-row " onSubmit={handleAddButtonClicked}>
         <div className="col-6">
           <input

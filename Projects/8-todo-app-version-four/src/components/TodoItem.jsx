@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { TbHttpDelete } from "react-icons/tb";
 import { TodoItemsContext } from "./store/todo-items-store";
+import styles from "./TodoItem.module.css";
 
 // function TodoItem({ todoName, todoDate, onDeleteClick }) { now don't expet onDeleteClick
 function TodoItem({ todoName, todoDate }) {
@@ -10,7 +11,7 @@ function TodoItem({ todoName, todoDate }) {
 
   return (
     <div className="container ">
-      <div className="row rj-row">
+      <div className="row  rj-row">
         <div className="col-6">{todoName}</div>
         <div className="col-4">{todoDate}</div>
         <div className="col-2">

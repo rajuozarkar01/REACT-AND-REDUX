@@ -12,9 +12,9 @@ function App() {
 
   //handleNewItem instead addNewItem:: it add's new Item
   const addNewItem = (itemName, itemDueDate) => {
-    setTodoItems((currValue) => {
+    setTodoItems((todoItems) => {
       const newTodoItems = [
-        ...currValue,
+        ...todoItems,
         { name: itemName, dueDate: itemDueDate },
       ];
       return newTodoItems;
@@ -27,7 +27,7 @@ function App() {
     const newTodoItems = todoItems.filter((item) => item.name !== todoItemName);
     // !==, because == Item to be Deleted
     setTodoItems(newTodoItems);
-    console.log(`Item Deleted:${todoItemName}`);
+    
   };
   return (
     // array, object any can be passed as 'value'

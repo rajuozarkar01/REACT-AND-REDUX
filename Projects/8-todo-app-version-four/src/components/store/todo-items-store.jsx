@@ -1,5 +1,6 @@
 import { createContext } from "react";
 
+
 export const TodoItemsContext = createContext({
   todoItems: [],
   //as property: b'cuz totoItems is array

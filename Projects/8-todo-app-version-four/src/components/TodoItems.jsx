@@ -6,7 +6,7 @@ const TodoItems = () => {
   // const {contextObj} = useContext(TodoItemsContext);
   // const todoItems = contextObj.todoItems;
   //above code using object destructuring
-  const { todoItems} = useContext(TodoItemsContext);
+  const { todoItems } = useContext(TodoItemsContext);
 
   return (
     <>
@@ -19,7 +19,6 @@ const TodoItems = () => {
           //App(), parent to TodoItems to child TodoItem it is not my functionality it's my child's.
 
           //now deleteItem from Context.provider
-          
         ></TodoItem>
       ))}
     </>

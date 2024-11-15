@@ -1,4 +1,4 @@
-import { createContext, useReducer } from "react";
+import { act, createContext, useReducer } from "react";
 
 export const PostList = createContext({
   postList: [],
@@ -7,10 +7,14 @@ export const PostList = createContext({
 });
 //reducer method it takes 1..currentstate 2..action will return new state(currPostList). and used (postListReducer)in args in useReducer + default val
 const postListReducer = (currPostList, action) => {
-  return currPostList;
+  let newPostList = currPostList;
+  if(action.type==='DELETE_POST'){
+    //filter keeps true element and delete falsy val
+    newPostList = currPostList.filter(post => post.id !== action.payload.postId)
+  }
+  return newPostList;
 };
-//PostList will be returned as PostList.Provider component
-//PostListProvider: what ever children it reveives as props we render it insied <PostList.Porvider> component also need to pass empty value as prop b'cz without value will not render anything
+
 const PostListProvider = ({ children }) => {
   const [postList, dispatchPostList] = useReducer(
     postListReducer,
@@ -18,7 +22,15 @@ const PostListProvider = ({ children }) => {
   );
 
   const addPost = () => {};
-  const deletePost = () => {};
+  const deletePost = (postId) => {
+    // dispatchPostList will goto  postListReducer will return new list... how(action)
+    dispatchPostList({
+      type: "DELETE_POST",
+      payload: {
+        postId,
+      },
+    });
+  };
 
   return (
     <PostList.Provider value={{ postList, addPost, deletePost }}>

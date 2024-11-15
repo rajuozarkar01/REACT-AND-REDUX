@@ -4,7 +4,7 @@ import { PostList as PostListData } from "../store/post-list-store"; //name conf
 
 const PostList = () => {
   const { postList } = useContext(PostListData); //we get obj here
-  console.log(postList);
+  // console.log(postList);
 
   return (
     <>

@@ -8,10 +8,15 @@ export const PostList = createContext({
 //reducer method it takes 1..currentstate 2..action will return new state(currPostList). and used (postListReducer)in args in useReducer + default val
 const postListReducer = (currPostList, action) => {
   let newPostList = currPostList;
-  if(action.type==='DELETE_POST'){
+  if (action.type === "DELETE_POST") {
     //filter keeps true element and delete falsy val
-    newPostList = currPostList.filter(post => post.id !== action.payload.postId)
+    newPostList = currPostList.filter(
+      (post) => post.id !== action.payload.postId
+    );
+  } else if (action.type === "ADD_POST") {
+    newPostList = [action.payload, ...currPostList];
   }
+
   return newPostList;
 };
 
@@ -21,7 +26,20 @@ const PostListProvider = ({ children }) => {
     DEFAULT_POST_LIST
   );
 
-  const addPost = () => {};
+  const addPost = (userId, postTitle, postBody, reactions, tags) => {
+    // console.log(`${userId}${postTitle}${postBody}${reactions}${tags}`);
+    dispatchPostList({
+      type: "ADD_POST",
+      payload: {
+        id: Date.now(),
+        title: postTitle,
+        body: postBody,
+        reactions: reactions,
+        userId: userId,
+        tags: tags,
+      },
+    });
+  };
   const deletePost = (postId) => {
     // dispatchPostList will goto  postListReducer will return new list... how(action)
     dispatchPostList({

@@ -10,7 +10,7 @@ import { useState } from "react";
 import PostListProvider from "./store/post-list-store";
 
 function App() {
-  const [selectedTab, setSelectedTab] = useState("Home");
+  const [selectedTab, setSelectedTab] = useState("Create Post");
   return (
     // all component  will be provided a children inside Provider
     <PostListProvider>

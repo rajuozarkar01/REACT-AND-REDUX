@@ -4,9 +4,8 @@ import { PostList } from "../store/post-list-store";
 
 const Post = ({ post }) => {
   const { deletePost } = useContext(PostList);
+
   return (
-    //style need pass an obj. and value in string
-    // <div className="card" style="width: 18rem;">
     <div className="card post-card">
       <div className="card-body ">
         <h5 className="card-title">
@@ -16,7 +15,6 @@ const Post = ({ post }) => {
             onClick={() => deletePost(post.id)}
           >
             <AiFillDelete />
-            <span className="visually-hidden">unread messages</span>
           </span>
         </h5>
         <p className="card-text">{post.body}</p>
@@ -27,7 +25,7 @@ const Post = ({ post }) => {
           </span>
         ))}
         <div className="alert alert-success reactions" role="alert">
-          This post has been reacted by {post.reactions} people
+          This post has been reacted by {post.reactions} people.
         </div>
       </div>
     </div>

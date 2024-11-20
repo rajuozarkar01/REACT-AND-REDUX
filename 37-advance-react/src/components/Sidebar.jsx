@@ -1,7 +1,4 @@
 const Sidebar = ({ selectedTab, setSelectedTab }) => {
-  const handleONClick = (tabName) => {
-    setSelectedTab(tabName);
-  };
   return (
     <>
       <div

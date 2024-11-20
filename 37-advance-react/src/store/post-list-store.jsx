@@ -22,11 +22,10 @@ const postListReducer = (currPostList, action) => {
   return newPostList;
 };
 
-const PostListProvider = ({ children }) => {
+const PostListProvider = ({children} ) => {
   const [postList, dispatchPostList] = useReducer(postListReducer, []);
 
   const addPost = (userId, postTitle, postBody, reactions, tags) => {
-    // console.log(`${userId}${postTitle}${postBody}${reactions}${tags}`);
     dispatchPostList({
       type: "ADD_POST",
       payload: {
@@ -61,7 +60,7 @@ const PostListProvider = ({ children }) => {
 
   return (
     <PostList.Provider
-      value={{ postList, addPost, addInitialPosts, deletePost }}
+      value= {{ postList, addPost, addInitialPosts, deletePost }}
     >
       {children}
     </PostList.Provider>

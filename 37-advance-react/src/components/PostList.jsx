@@ -1,17 +1,18 @@
-import { useContext } from "react";
+// import { useContext, useEffect, useState } from "react";
 import Post from "./Post";
-import { PostList as PostListData } from "../store/post-list-store"; //name conflict
+import { PostList as PostListData } from "../store/post-list-store";
 import WelcomeMessage from "./WelcomeMessage";
+import { useContext } from "react";
+
+
 
 const PostList = () => {
   const { postList, addInitialPosts } = useContext(PostListData);
-  //we get obj here
-  // console.log(postList);
+
   const handleGetPostsClick = () => {
     fetch("https://dummyjson.com/posts")
       .then((res) => res.json())
-  
-      .then(data => {
+      .then((data) => {
         addInitialPosts(data.posts);
       });
   };

@@ -14,6 +14,7 @@ const postListReducer = (currPostList, action) => {
       (post) => post.id !== action.payload.postId
     );
   } else if (action.type === "ADD_INITIAL_POSTS") {
+    // newPostList = action.payload.posts;
     newPostList = action.payload.posts;
   } else if (action.type === "ADD_POST") {
     newPostList = [action.payload, ...currPostList];
@@ -22,7 +23,7 @@ const postListReducer = (currPostList, action) => {
   return newPostList;
 };
 
-const PostListProvider = ({children} ) => {
+const PostListProvider = ({ children }) => {
   const [postList, dispatchPostList] = useReducer(postListReducer, []);
 
   const addPost = (userId, postTitle, postBody, reactions, tags) => {
@@ -60,7 +61,7 @@ const PostListProvider = ({children} ) => {
 
   return (
     <PostList.Provider
-      value= {{ postList, addPost, addInitialPosts, deletePost }}
+      value={{ postList, addPost, addInitialPosts, deletePost }}
     >
       {children}
     </PostList.Provider>

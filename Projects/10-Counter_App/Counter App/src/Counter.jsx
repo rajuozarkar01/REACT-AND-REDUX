@@ -10,10 +10,10 @@ function Counter() {
   const handleIncrease = () => setCount((prevCount) => prevCount + 1);
   // prevCount ensures you're working with the latest state, which is important when updates are asynchronous.
 
-  // const handleDecrease = () => setCount((prevCount) => prevCount - 1);  // counter below zero
+  const handleDecrease = () => setCount((prevCount) => prevCount - 1);  // counter below zero
 
-  const handleDecrease = () =>
-    setCount((prevCount) => Math.max(prevCount - 1, 0));
+  // const handleDecrease = () =>
+  //   setCount((prevCount) => Math.max(prevCount - 1, 0));
   // counter should not to go below zero
 
   const handleReset = () => setCount(0);

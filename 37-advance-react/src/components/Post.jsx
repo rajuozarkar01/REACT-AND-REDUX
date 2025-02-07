@@ -5,7 +5,6 @@ import { PostList } from "../store/post-list-store";
 
 const Post = ({ post }) => {
   const { deletePost } = useContext(PostList);
-  
 
   return (
     <div className="card post-card">
@@ -27,7 +26,8 @@ const Post = ({ post }) => {
           </span>
         ))}
         <div className="alert alert-success reactions" role="alert">
-          This post has been reacted by {post.reactions} people.
+          This post has {post.reactions.likes} likes and{" "}
+          {post.reactions.dislikes} dislikes.
         </div>
       </div>
     </div>

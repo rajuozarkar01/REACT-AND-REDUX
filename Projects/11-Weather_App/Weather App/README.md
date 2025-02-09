@@ -1,8 +1,9 @@
-# React + Vite
+# Weather App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+#09-02-2025 : 16:44
+tailwind configuration solved I refered
+: https://tailwindcss.com/docs/installation/using-postcss
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+2nd option 'Using PostCSS' also need to mention that update index.html : <link href="/src/App.css" rel="stylesheet">
+as destination CSS file : "/src/App.css"
+it will give memories of effort took one and half day.

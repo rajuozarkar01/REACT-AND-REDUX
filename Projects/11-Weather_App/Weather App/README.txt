@@ -35,7 +35,7 @@ Changes & Improvements:
 ✅ Mobile Friendly: Adjusts well on different screen sizes.
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
-### **1. Data Flow of the Weather App**  
+# **1. Data Flow of the Weather App**  
 The data flow in your Weather App follows these steps:  
 
 1. **User Input**:  
@@ -55,9 +55,9 @@ The data flow in your Weather App follows these steps:
 
 ---
 
-### **2. Suggested Improvements**  
+# **2. Suggested Improvements**  
 
-#### **Code Structure Enhancements:**  
+# **Code Structure Enhancements:**  
 1. **Move API Key to .env File**  
    - Storing API keys in code is not safe. Move it to `.env` and use `VITE_APP_API_KEY`:  
      ```javascript
@@ -96,10 +96,10 @@ The data flow in your Weather App follows these steps:
 
 ---
 
-### **3. Expand the App into Further Modules**  
+# **3. Expand the App into Further Modules**  
 Here are some ideas to extend your Weather App:  
 
-#### **A. Display Additional Weather Data**  
+# **A. Display Additional Weather Data**  
 - Add more details like humidity, wind speed, sunrise/sunset.  
 - Modify the API response processing:  
   ```javascript
@@ -107,14 +107,14 @@ Here are some ideas to extend your Weather App:
   <p>Wind Speed: {weather.wind.speed} m/s</p>
   ```
 
-#### **B. Implement a Five-Day Forecast Feature**  
+# **B. Implement a Five-Day Forecast Feature**  
 - Use OpenWeather's 5-day forecast API:  
   ```
   https://api.openweathermap.org/data/2.5/forecast?q=city&appid=API_KEY
   ```
 - Show weather trends over time (charts or list format).  
 
-#### **C. Use Geolocation to Detect User’s Location**  
+# **C. Use Geolocation to Detect User’s Location**  
 - Fetch weather automatically using `navigator.geolocation`:  
   ```javascript
   navigator.geolocation.getCurrentPosition((position) => {
@@ -123,11 +123,11 @@ Here are some ideas to extend your Weather App:
   });
   ```
 
-#### **D. Improve UI with a Weather-Themed Design**  
+# **D. Improve UI with a Weather-Themed Design**  
 - Use animated icons (e.g., `react-icons`, `Lottie`).  
 - Display background images based on weather conditions.  
 
-#### **E. Convert to Redux for State Management**  
+# **E. Convert to Redux for State Management**  
 - Use Redux to manage weather state globally.  
 - Allow saving multiple favorite cities.  
 

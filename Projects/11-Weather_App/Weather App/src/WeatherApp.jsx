@@ -1,76 +1,102 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 
-// WeatherApp component fetches weather data from OpenWeatherMap API and displays it
 const WeatherApp = () => {
-  // State variables to store user input, weather data, and error messages
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState(null);
   const [error, setError] = useState(null);
 
-  // OpenWeatherMap API key (replace with your own API key)
-  const API_KEY = "05d72ef477587dee2adf9fc7a94d35e5";
+  const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
-  // Function to fetch weather data
-  const fetchWeather = async () => {
-    if (!city) return; // Exit if city input is empty
-    setError(null);
+  // console.log("API Key:", apiKey);
+  // console.log("Base URL:", baseUrl);
+
+  // Fetch weather by city name
+  const fetchWeather = async (city) => {
     try {
       const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`
+        `${baseUrl}/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
       );
-
-      if (!response.ok) {
-        throw new Error("City not found"); // Handle errors if city is invalid
-      }
-
       const data = await response.json();
-      setWeather(data); // Update weather state with API response
-    } catch (err) {
-      setError(err.message); // Update error state with error message
+      setWeather(data); // Update state with weather data
+      setError(null); // Clear errors
+    } catch (error) {
+      console.error("Error fetching weather data: ", error);
+      setError("Failed to fetch weather data");
     }
   };
 
-  navigator.geolocation.getCurrentPosition((position) => {
-    const { latitude, longitude } = position.coords;
-    fetchWeatherByCoords(latitude, longitude);
-  });
+  // Fetch weather by geolocation coordinates
+  const fetchWeatherByCoords = async (latitude, longitude) => {
+    console.log("Latitude:", latitude, "Longitude:", longitude); // Debugging
+    try {
+      const response = await fetch(
+        `${baseUrl}/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`
+      );
+      const data = await response.json();
+      console.log("Weather Data:", data); // Debugging
+      setWeather(data);
+      setError(null);
+    } catch (error) {
+      console.error("Error fetching weather data: ", error);
+      setError("Failed to fetch weather data");
+    }
+  };
+
+  // Get user location
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          console.log("User location:", latitude, longitude);
+          fetchWeatherByCoords(latitude, longitude);
+        },
+        (error) => {
+          console.error("Location access denied:", error);
+          setError("Location access denied. Enter a city manually.");
+        }
+      );
+    }
+  }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-blue-100 p-4 ">
-      <h1 className="text-2xl font-bold mb-4">Weather App</h1>
-      <div className="flex gap-2">
-        {/* Input field for city name */}
-        <input
-          type="text"
-          placeholder="Enter city name"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          className="p-2 border rounded"
-        />
-
-        {/* Button to fetch weather data */}
-        <button
-          onClick={fetchWeather}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Get Weather
-        </button>
-      </div>
-
-      {/* Display error message if any */}
-      {error && <p className="text-red-500 mt-2">{error}</p>}
-
-      {/* Display weather information if available */}
-      {weather && (
-        <div className="mt-4 p-4 bg-white shadow rounded">
-          <h2 className="text-xl font-bold">{weather.name}</h2>
-          <p>{weather.weather[0].description}</p>
-          <p className="text-lg">Temperature: {weather.main.temp}°C</p>
-          <p>Humidity: {weather.main.humidity}%</p>
-          <p>Wind Speed: {weather.wind.speed} m/s</p>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-200 to-blue-500 p-6">
+      <h1 className="text-3xl font-bold text-white mb-6">Weather App</h1>
+      <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
+        <div className="flex gap-3">
+          <input
+            type="text"
+            placeholder="Enter city name"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            className="flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            onClick={() => fetchWeather(city)}
+            className="bg-blue-500 text-white px-5 py-3 rounded-lg hover:bg-blue-700 transition"
+          >
+            Get Weather
+          </button>
         </div>
-      )}
+
+        {error && <p className="text-red-500 mt-3 text-center">{error}</p>}
+
+        {weather && (
+          <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow-inner text-center">
+            <h2 className="text-2xl font-bold">{weather.name}</h2>
+            <p className="capitalize text-gray-700">
+              {weather.weather[0].description}
+            </p>
+            <p className="text-xl font-semibold mt-2">
+              🌡 {weather.main.temp}°C
+            </p>
+            <p>Humidity: {weather.main.humidity}%</p>
+            <p>Wind Speed: {weather.wind.speed} m/s</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

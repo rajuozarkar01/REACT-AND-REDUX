@@ -8,6 +8,7 @@ const WeatherApp = () => {
 
   const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  
 
   // console.log("API Key:", apiKey);
   // console.log("Base URL:", baseUrl);
@@ -45,21 +46,21 @@ const WeatherApp = () => {
   };
 
   // Get user location
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          console.log("User location:", latitude, longitude);
-          fetchWeatherByCoords(latitude, longitude);
-        },
-        (error) => {
-          console.error("Location access denied:", error);
-          setError("Location access denied. Enter a city manually.");
-        }
-      );
-    }
-  }, []);
+useEffect(() => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        console.log("User location:", latitude, longitude);
+        fetchWeatherByCoords(latitude, longitude);
+      },
+      (error) => {
+        console.error("Location access denied:", error);
+        setError("Location access denied. Enter a city manually.");
+      }
+    );
+  }
+}, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-200 to-blue-500 p-6">

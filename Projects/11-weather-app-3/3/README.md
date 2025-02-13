@@ -1,12 +1,16 @@
-UI Improvements : To achieve a weather-themed design
+🔹 Steps to Add 5-Day Forecast
+          
 
+UI Improvements : To achieve a weather-themed design
+   **Uses weather API’s built-in icons dynamically**
+              **No json**
 1. Add animated icons (react-icons or lottie-react).
 2. Change the background dynamically based on weather conditions.
 
 1.   Changes in **WeatherDisplay.jsx**
 Import react-icons for weather conditions.
 Apply a dynamic background image.
-Add Lottie animations
+
 
 2. Changes in **WeatherForm.jsx**
 To match the new design:
@@ -40,3 +44,4 @@ Many weather APIs provide icons as URLs. Instead of Lottie or React Icons, you c
 ✅ Prevents crashes if weather.weather is missing or empty.
 ✅ Handles errors and displays an error message instead of crashing.
 ✅ Ensures smooth background updates without errors.
+

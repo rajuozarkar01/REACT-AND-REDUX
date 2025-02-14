@@ -1,7 +1,6 @@
-function AppName() {
-  
-return <h1>Todo App</h1>;
 
+function AppName () {
+  return<h1>Todo App</h1>
 }
 
-export default  AppName;
+export default AppName;

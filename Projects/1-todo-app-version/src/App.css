@@ -1,11 +1,11 @@
-h1 {
+.h1 {
   font-weight: 700;
   font-size: 45px;
   margin: 10px;
   margin-bottom: 20px;
 }
 
-input {
+.input {
   width: 100%;
   height: 30px;
 }
@@ -19,4 +19,11 @@ input {
 }
 .rj-row {
   margin: 10px;
+}
+.todo-container{
+  background-color:turquoise;
+  margin: 85px;
+  padding: 18px;
+  border-radius: 5px;
+  
 }

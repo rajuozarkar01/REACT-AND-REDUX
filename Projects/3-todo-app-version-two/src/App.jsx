@@ -5,6 +5,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 function App() {
+
+  // Stores todoItems (array of objects)
   const todoItems = [
     {
       name: "Buy milk",
@@ -29,6 +31,7 @@ function App() {
         <div className="app-container">
           <AddTodo />
           <div className="items-container">
+{/*passing props to TodoItems */}
             <TodoItems todoItems={todoItems}></TodoItems>
           </div>
         </div>

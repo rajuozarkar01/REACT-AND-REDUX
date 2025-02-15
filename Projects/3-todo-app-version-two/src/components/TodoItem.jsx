@@ -1,3 +1,7 @@
+// TodoItem.jsx (Single To-Do Item)
+// Receives props (todoName and todoDate).
+// Displays the received data.
+
 function TodoItem({ todoName, todoDate }) {
   return (
     <div className="container ">

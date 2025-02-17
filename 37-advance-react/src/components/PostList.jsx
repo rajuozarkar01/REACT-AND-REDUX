@@ -7,20 +7,29 @@ import LoadingSpinner from "./LoadingSpinner";
 const PostList = () => {
   const { postList, addInitialPosts } = useContext(PostListData);
   const [fetching, setFetching] = useState(false);
+  //12:44 YT
 
   useEffect(() => {
     setFetching(true);
-    fetch("https://dummyjson.com/posts")
+    const controller = new AbortController();
+    const signal = controller.signal;
+    
+    fetch("https://dummyjson.com/posts", {signal})
       .then((res) => res.json())
       .then((data) => {
         addInitialPosts(data.posts);
         setFetching(false);
       });
+      //clean up method, whenever comp gone killed, it will evoked
+    return () => {
+      console.log("Cleaning up UseEffect");
+      controller.abort();
+    };
   }, []);
 
   return (
     <>
-      {fetching &&  <LoadingSpinner />}
+      {fetching && <LoadingSpinner />}
       {!fetching && postList.length === 0 && <WelcomeMessage />}
       {!fetching && postList.map((post) => <Post key={post.id} post={post} />)}
     </>

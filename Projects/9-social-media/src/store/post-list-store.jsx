@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { act, createContext, useReducer } from "react";
 
 export const PostList = createContext({
@@ -40,7 +41,9 @@ const PostListProvider = ({ children }) => {
       },
     });
   };
-  const deletePost = (postId) => {
+  // YT: 13:16:00
+  // useCallback impletmentation use for performance optimization
+  const deletePost = useCallback((postId) => {
     // dispatchPostList will goto  postListReducer will return new list... how(action)
     dispatchPostList({
       type: "DELETE_POST",
@@ -48,7 +51,7 @@ const PostListProvider = ({ children }) => {
         postId,
       },
     });
-  };
+  }, [dispatchPostList]);
 
   return (
     <PostList.Provider value={{ postList, addPost, deletePost }}>

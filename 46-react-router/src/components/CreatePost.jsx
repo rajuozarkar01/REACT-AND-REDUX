@@ -1,9 +1,11 @@
 import { useContext } from "react";
 import { PostList } from "../store/post-list-store";
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CreatePost = () => {
   const { addPost } = useContext(PostList);
+  const navigat = useNavigate(); //hook retru method to Dynamic nav.
 
   const userIdElement = useRef();
   const postTitleElement = useRef();
@@ -26,7 +28,23 @@ const CreatePost = () => {
     reactionsElement.current.value = "";
     tagsElement.current.value = "";
 
-    addPost(userId, postTitle, postBody, reactions, tags);
+    fetch("https://dummyjson.com/posts/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: postTitle,
+        body: postBody,
+        reactions: reactions,
+        userId: userId,
+        tags: tags,
+      }),
+    })
+      .then((res) => res.json())
+      .then((post) => {
+        addPost(post);
+        navigat("/");
+      });
+    
   };
 
   return (
@@ -68,6 +86,7 @@ const CreatePost = () => {
           placeholder="Tell us more about it..."
         />
       </div>
+      
       <div className="mb-3">
         <label htmlFor="reactions" className="form-label">
           Number of reactions
@@ -80,11 +99,12 @@ const CreatePost = () => {
           placeholder="how many people reacted to this post"
         />
       </div>
+
       <div className="mb-3">
         <label htmlFor="tags" className="form-label">
           Enter your hastags here
         </label>
-        <textarea
+        <input
           type="text"
           ref={tagsElement}
           rows="4"

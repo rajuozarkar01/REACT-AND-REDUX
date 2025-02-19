@@ -23,15 +23,11 @@ const Post = ({ post }) => {
             {tag}
           </span>
         ))}
-        {/* <div className="alert alert-success reactions" role="alert">
-          This post has {post.reactions.likes} likes and{" "}
-          {post.reactions.dislikes} dislikes.
-        </div>
-        //If some posts do not have reactions, handle it safely: */}
         <div className="alert alert-success reactions" role="alert">
           This post has {post.reactions?.likes ?? 0} likes and{" "}
           {post.reactions?.dislikes ?? 0} dislikes.
         </div>
+
       </div>
     </div>
   );

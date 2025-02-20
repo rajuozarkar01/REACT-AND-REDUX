@@ -1,4 +1,4 @@
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 
 const DisplayCounter = () => {
   const counter = useSelector((store) => store.counter);

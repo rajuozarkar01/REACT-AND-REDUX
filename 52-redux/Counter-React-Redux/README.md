@@ -211,3 +211,6 @@ Would you like help in adding **Redux Toolkit** or setting up **middleware** lik
 If you're selecting complex objects or arrays, use **`useMemo`** or **Reselect** to prevent unnecessary re-renders due to shallow comparisons.
 
 Would you like to see how to implement **Reselect** or more performance tips for React-Redux? 🚀
+
+**23:02:2025 Purpose : to implement and check possiblity use router for Signup.jsx, for imagined website
+(YT: 16:28:00)**

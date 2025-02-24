@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const AddUserForm = ({ onUserAdded }) => {
   const [name, setName] = useState("");
@@ -34,13 +35,14 @@ const AddUserForm = ({ onUserAdded }) => {
       setName("");
       setEmail("");
       setErrors({});
+      toast.success("User added successfully!");
       onUserAdded();
     } catch (error) {
       console.error(
         "Error adding user:",
         error.response?.data || error.message
       );
-      alert("Failed to add user. Please try again.");
+      toast.error("Failed to add user. Please try again.");
     }
   };
 

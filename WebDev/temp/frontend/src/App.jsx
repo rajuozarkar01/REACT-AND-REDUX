@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import Header from "./components/Header";
 import UserList from "./components/UserList";
 import AddUserForm from "./components/AddUserForm";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   const [refresh, setRefresh] = useState(false);
 
   const handleUserAdded = () => {
-    setRefresh((prev) => !prev); // Toggle refresh to trigger UserList update
+    setRefresh((prev) => !prev); // Trigger UserList update
   };
 
   return (
@@ -17,6 +19,7 @@ const App = () => {
         <AddUserForm onUserAdded={handleUserAdded} />
         <UserList refresh={refresh} />
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };

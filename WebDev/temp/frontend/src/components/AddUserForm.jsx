@@ -1,36 +1,54 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import axios from "axios";
 
 const AddUserForm = ({ onUserAdded }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const newErrors = {};
+    if (!name.trim()) newErrors.name = "Name is required";
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = "Invalid email format";
+    }
+    return newErrors;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
 
     try {
-      // Send POST request to backend
-      const res = await axios.post('http://localhost:5000/api/users', {
+      const res = await axios.post("http://localhost:5000/api/users", {
         name,
         email,
       });
-
-      console.log('User added:', res.data); // Debug: Log added user
-
-      // Clear form
-      setName('');
-      setEmail('');
-
-      // Notify App to refresh User List
+      console.log("User added:", res.data);
+      setName("");
+      setEmail("");
+      setErrors({});
       onUserAdded();
     } catch (error) {
-      console.error('Error adding user:', error.response?.data || error.message);
-      alert('Failed to add user. Please try again.');
+      console.error(
+        "Error adding user:",
+        error.response?.data || error.message
+      );
+      alert("Failed to add user. Please try again.");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-6 bg-white p-4 rounded shadow-md">
+    <form
+      onSubmit={handleSubmit}
+      className="mb-6 bg-white p-4 rounded shadow-md"
+    >
       <h2 className="text-xl font-semibold mb-4">Add User</h2>
       <div className="mb-4">
         <input
@@ -41,6 +59,9 @@ const AddUserForm = ({ onUserAdded }) => {
           className="w-full px-3 py-2 border rounded"
           required
         />
+        {errors.name && (
+          <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+        )}
       </div>
       <div className="mb-4">
         <input
@@ -51,8 +72,14 @@ const AddUserForm = ({ onUserAdded }) => {
           className="w-full px-3 py-2 border rounded"
           required
         />
+        {errors.email && (
+          <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+        )}
       </div>
-      <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+      <button
+        type="submit"
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+      >
         Add User
       </button>
     </form>

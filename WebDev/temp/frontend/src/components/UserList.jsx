@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const UserList = ({ refresh }) => {
   const [users, setUsers] = useState([]);
@@ -7,29 +8,29 @@ const UserList = ({ refresh }) => {
   useEffect(() => {
     // Fetch users from backend
     const fetchUsers = async () => {
-      console.log("Fetching users...");
       try {
+        console.log("Fetching users...");
         const res = await axios.get("http://localhost:5000/api/users");
         console.log("Fetched users response:", res.data);
         setUsers(res.data);
       } catch (err) {
         console.error("Error fetching users:", err);
+        toast.error("Failed to fetch users.");
       }
     };
 
     fetchUsers();
-  }, [refresh]);
+  }, [refresh]); // Runs whenever refresh changes
 
-  // Handle Delete User
-  const handleDelete = async (userId) => {
+  const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/users/${userId}`);
-      console.log(`User ${userId} deleted successfully`);
-      // Update UI after delete
-      setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
+      await axios.delete(`http://localhost:5000/api/users/${id}`);
+      toast.success("User deleted successfully!");
+      // Refresh the user list
+      setUsers((prevUsers) => prevUsers.filter((user) => user._id !== id));
     } catch (err) {
       console.error("Error deleting user:", err);
-      alert("Failed to delete user. Please try again.");
+      toast.error("Failed to delete user.");
     }
   };
 

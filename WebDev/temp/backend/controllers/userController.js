@@ -21,6 +21,21 @@ exports.getUsers = async (req, res) => {
   }
 };
 
+
+// ✅ @desc Fetch single user by ID
+exports.getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching user", error });
+  }
+};
+
 // @desc Delete user by ID
 exports.deleteUser = async (req, res) => {
   try {

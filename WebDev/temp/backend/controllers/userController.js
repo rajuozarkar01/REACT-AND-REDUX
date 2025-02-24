@@ -1,7 +1,7 @@
-const User = require("../models/user");
+import User from "../models/user.js";
 
 // @desc Add new user
-exports.addUser = async (req, res) => {
+export const addUser = async (req, res) => {
   try {
     const newUser = new User(req.body);
     const savedUser = await newUser.save();
@@ -12,7 +12,7 @@ exports.addUser = async (req, res) => {
 };
 
 // @desc Fetch all users
-exports.getUsers = async (req, res) => {
+export const getUsers = async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).json(users);
@@ -21,9 +21,8 @@ exports.getUsers = async (req, res) => {
   }
 };
 
-
-// ✅ @desc Fetch single user by ID
-exports.getUserById = async (req, res) => {
+// @desc Fetch single user by ID
+export const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (user) {
@@ -37,7 +36,7 @@ exports.getUserById = async (req, res) => {
 };
 
 // @desc Delete user by ID
-exports.deleteUser = async (req, res) => {
+export const deleteUser = async (req, res) => {
   try {
     const deletedUser = await User.findByIdAndDelete(req.params.id);
     if (!deletedUser)
@@ -48,15 +47,15 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
-// ✅ @desc Update user (PUT/PATCH)
-exports.updateUser = async (req, res) => {
+// @desc Update user (PUT/PATCH)
+export const updateUser = async (req, res) => {
   const { id } = req.params;
   const updates = req.body;
 
   try {
     const updatedUser = await User.findByIdAndUpdate(id, updates, {
-      new: true, // Return the updated document
-      runValidators: true, // Run schema validations
+      new: true,
+      runValidators: true,
     });
 
     if (!updatedUser) {

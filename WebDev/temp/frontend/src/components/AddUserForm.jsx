@@ -9,27 +9,25 @@ const AddUserForm = ({ onUserAdded }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
+  
     try {
       const res = await axios.post('http://localhost:5000/api/users', {
         name,
         email,
       });
-
-      console.log('User added:', res.data);
-      toast.success('User added successfully!');
-
+  
+      console.log('User added:', res.data); // Debug log
+  
       setName('');
       setEmail('');
       onUserAdded();
+      toast.success('User added successfully!');
     } catch (error) {
       console.error('Error adding user:', error.response?.data || error.message);
       toast.error('Failed to add user. Please try again.');
-    } finally {
-      setLoading(false);
     }
   };
+  
 
   return (
     <form onSubmit={handleSubmit} className="mb-6 bg-white p-4 rounded shadow-md">

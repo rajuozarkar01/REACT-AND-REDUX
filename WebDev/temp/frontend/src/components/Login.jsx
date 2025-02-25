@@ -3,6 +3,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
+import { FaFacebook } from "react-icons/fa";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -65,6 +67,14 @@ const Login = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleLogin = () => {
+    toast.info("Google login clicked");
+  };
+
+  const handleFacebookLogin = () => {
+    toast.info("Facebook login clicked");
   };
 
   return (
@@ -130,6 +140,24 @@ const Login = () => {
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
+
+        <div className="my-4 text-center text-gray-500">or login with</div>
+
+        <div className="flex space-x-4">
+          <button
+            onClick={handleGoogleLogin}
+            className="flex-1 flex items-center justify-center px-4 py-2 border rounded hover:bg-gray-100"
+          >
+            <FcGoogle className="mr-2" size={20} /> Google
+          </button>
+
+          <button
+            onClick={handleFacebookLogin}
+            className="flex-1 flex items-center justify-center px-4 py-2 border rounded hover:bg-gray-100 text-blue-600"
+          >
+            <FaFacebook className="mr-2" size={20} /> Facebook
+          </button>
+        </div>
       </div>
     </div>
   );

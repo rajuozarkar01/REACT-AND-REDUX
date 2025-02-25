@@ -11,7 +11,7 @@ const Dashboard = () => {
       toast.error("You need to log in first!");
       navigate("/login");
     }
-  }, [token, navigate]);
+  }, [token, navigate]); // Removed typo 'a' and ensured proper deps
 
   const handleLogout = () => {
     localStorage.removeItem("token");

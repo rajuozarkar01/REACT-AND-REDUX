@@ -153,8 +153,8 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-400 to-purple-500">
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md animate-fade-in">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-400 to-purple-500 p-4">
+      <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md animate-fade-in">
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">{mfaStep ? "Enter Verification Code" : "Login"}</h2>
         {!mfaStep ? (
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -166,7 +166,7 @@ const Login = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${errors.email ? 'border-red-500' : ''}`}
+                className={`w-full px-4 py-3 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${errors.email ? 'border-red-500' : ''}`}
               />
               {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
             </div>
@@ -179,7 +179,7 @@ const Login = () => {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${errors.password ? 'border-red-500' : ''}`}
+                className={`w-full px-4 py-3 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${errors.password ? 'border-red-500' : ''}`}
               />
               <button
                 type="button"
@@ -210,7 +210,7 @@ const Login = () => {
 
             <button
               type="submit"
-              className={`w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-lg hover:from-blue-600 hover:to-purple-600 transition transform hover:scale-105 flex items-center justify-center ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-xl shadow-md hover:from-blue-600 hover:to-purple-600 transition transform hover:scale-105 flex items-center justify-center ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
               disabled={loading}
             >
               {loading ? <Loader2 className="animate-spin mr-2" size={20} /> : null}
@@ -227,13 +227,13 @@ const Login = () => {
                 value={formData.verificationCode}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <button
               type="submit"
-              className={`w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition flex items-center justify-center ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`w-full bg-green-500 text-white py-3 rounded-xl shadow-md hover:bg-green-600 transition flex items-center justify-center ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
               disabled={loading}
             >
               {loading ? <Loader2 className="animate-spin mr-2" size={20} /> : null}
@@ -248,14 +248,14 @@ const Login = () => {
             <div className="flex space-x-4">
               <button
                 onClick={handleGoogleLogin}
-                className="flex-1 flex items-center justify-center px-4 py-2 border rounded-lg hover:bg-gray-100 transition"
+                className="flex-1 flex items-center justify-center px-4 py-2 border rounded-xl shadow-sm hover:bg-gray-100 transition"
               >
                 <FcGoogle className="mr-2" size={20} /> Google
               </button>
 
               <button
                 onClick={handleFacebookLogin}
-                className="flex-1 flex items-center justify-center px-4 py-2 border rounded-lg hover:bg-gray-100 text-blue-600 transition"
+                className="flex-1 flex items-center justify-center px-4 py-2 border rounded-xl shadow-sm hover:bg-gray-100 text-blue-600 transition"
               >
                 <FaFacebook className="mr-2" size={20} /> Facebook
               </button>

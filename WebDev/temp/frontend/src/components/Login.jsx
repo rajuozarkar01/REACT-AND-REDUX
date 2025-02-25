@@ -13,6 +13,7 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
 
   const validate = () => {
@@ -47,6 +48,13 @@ const Login = () => {
       const res = await axios.post("/api/users/login", formData);
       toast.success(res.data.message);
       localStorage.setItem("token", res.data.token);
+
+      if (rememberMe) {
+        localStorage.setItem("rememberMe", JSON.stringify(formData.email));
+      } else {
+        localStorage.removeItem("rememberMe");
+      }
+
       navigate("/dashboard");
     } catch (err) {
       if (err.response && err.response.data) {
@@ -97,7 +105,17 @@ const Login = () => {
             {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
           </div>
 
-          <div className="text-right">
+          <div className="flex items-center justify-between">
+            <label className="flex items-center text-sm">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="mr-2"
+              />
+              Remember Me
+            </label>
+
             <Link to="/forgot-password" className="text-sm text-blue-500 hover:underline">
               Forgot Password?
             </Link>

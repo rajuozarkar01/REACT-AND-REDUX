@@ -5,6 +5,7 @@ import { body, validationResult } from "express-validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
@@ -83,9 +84,10 @@ router.post(
   }
 );
 
-// CREATE User - POST /api/users
+// CREATE User - POST /api/users (Protected)
 router.post(
   "/",
+  authMiddleware,
   [
     body("name")
       .notEmpty()
@@ -118,8 +120,8 @@ router.post(
   }
 );
 
-// GET All Users - GET /api/users
-router.get("/", async (req, res) => {
+// GET All Users - GET /api/users (Protected)
+router.get("/", authMiddleware, async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).json(users);
@@ -128,8 +130,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET Single User - GET /api/users/:id
-router.get("/:id", async (req, res) => {
+// GET Single User - GET /api/users/:id (Protected)
+router.get("/:id", authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -139,9 +141,10 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// UPDATE User - PUT /api/users/:id
+// UPDATE User - PUT /api/users/:id (Protected)
 router.put(
   "/:id",
+  authMiddleware,
   [
     body("name")
       .optional()
@@ -176,8 +179,8 @@ router.put(
   }
 );
 
-// DELETE User - DELETE /api/users/:id
-router.delete("/:id", async (req, res) => {
+// DELETE User - DELETE /api/users/:id (Protected)
+router.delete("/:id", authMiddleware, async (req, res) => {
   try {
     const deletedUser = await User.findByIdAndDelete(req.params.id);
     if (!deletedUser)

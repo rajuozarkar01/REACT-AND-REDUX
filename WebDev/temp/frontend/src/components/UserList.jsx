@@ -1,40 +1,50 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import { Loader2, UserX } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { Loader2, UserX } from "lucide-react";
 
 const UserList = ({ refresh }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const token = localStorage.getItem("token");
+
   useEffect(() => {
     const fetchUsers = async () => {
       setLoading(true);
       try {
-        const res = await axios.get('http://localhost:5000/api/users');
+        const res = await axios.get("http://localhost:5000/api/users", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setUsers(res.data);
-        console.log('Fetched users response:', res.data);
+        console.log("Fetched users response:", res.data);
       } catch (err) {
-        console.error('Error fetching users:', err);
-        toast.error('Failed to fetch users.');
+        console.error("Error fetching users:", err);
+        toast.error("Failed to fetch users.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchUsers();
-  }, [refresh]);
+  }, [refresh, token]);
 
   const handleDelete = async (userId) => {
-    if (!window.confirm('Are you sure you want to delete this user?')) return;
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/users/${userId}`);
-      toast.success('User deleted successfully!');
+      await axios.delete(`http://localhost:5000/api/users/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast.success("User deleted successfully!");
       setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
     } catch (err) {
-      console.error('Error deleting user:', err);
-      toast.error('Failed to delete user.');
+      console.error("Error deleting user:", err);
+      toast.error("Failed to delete user.");
     }
   };
 

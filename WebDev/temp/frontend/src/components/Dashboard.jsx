@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { User, Mail, LogOut, Activity, Edit, BarChart2 } from "lucide-react";
+import { User, Mail, LogOut, Activity, Edit, BarChart2, Shield } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 const Dashboard = () => {
@@ -83,7 +83,7 @@ const Dashboard = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Profile updated successfully!");
-      setUser(editData);
+      setUser((prev) => ({ ...prev, ...editData }));
       setIsEditing(false);
     } catch (err) {
       console.error("Error updating profile:", err);
@@ -96,6 +96,19 @@ const Dashboard = () => {
       <h1 className="text-3xl font-bold mb-4">Welcome to the Dashboard! 🎉</h1>
       {user ? (
         <div className="mb-6 bg-white p-4 rounded shadow-md">
+          <div className="flex items-center mb-2">
+            <User className="w-5 h-5 mr-2 text-blue-500" />
+            <p className="text-lg">Logged in as: <strong>{user.name}</strong></p>
+          </div>
+          <div className="flex items-center mb-2">
+            <Mail className="w-5 h-5 mr-2 text-green-500" />
+            <p className="text-lg">Email: <strong>{user.email}</strong></p>
+          </div>
+          <div className="flex items-center mb-4">
+            <Shield className="w-5 h-5 mr-2 text-red-500" />
+            <p className="text-lg">Role: <strong>{user.role}</strong></p>
+          </div>
+
           {isEditing ? (
             <form onSubmit={handleEditSubmit} className="space-y-4">
               <div>
@@ -130,19 +143,9 @@ const Dashboard = () => {
               </div>
             </form>
           ) : (
-            <>
-              <div className="flex items-center mb-2">
-                <User className="w-5 h-5 mr-2 text-blue-500" />
-                <p className="text-lg">Logged in as: <strong>{user.name}</strong></p>
-              </div>
-              <div className="flex items-center">
-                <Mail className="w-5 h-5 mr-2 text-green-500" />
-                <p className="text-lg">Email: <strong>{user.email}</strong></p>
-              </div>
-              <button onClick={handleEditToggle} className="mt-4 bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition flex items-center">
-                <Edit className="w-5 h-5 mr-2" /> Edit Profile
-              </button>
-            </>
+            <button onClick={handleEditToggle} className="mt-4 bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition flex items-center">
+              <Edit className="w-5 h-5 mr-2" /> Edit Profile
+            </button>
           )}
         </div>
       ) : (
@@ -166,23 +169,25 @@ const Dashboard = () => {
         )}
       </div>
 
-      <div className="mb-6">
-        <h2 className="text-2xl font-semibold mb-3 flex items-center">
-          <BarChart2 className="w-6 h-6 mr-2 text-indigo-500" /> User Statistics
-        </h2>
-        {userStats.length > 0 ? (
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={userStats}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="value" fill="#8884d8" />
-            </BarChart>
-          </ResponsiveContainer>
-        ) : (
-          <p className="text-gray-600">No statistics available.</p>
-        )}
-      </div>
+      {user && user.role === "admin" && (
+        <div className="mb-6">
+          <h2 className="text-2xl font-semibold mb-3 flex items-center">
+            <BarChart2 className="w-6 h-6 mr-2 text-indigo-500" /> User Statistics
+          </h2>
+          {userStats.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={userStats}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="value" fill="#8884d8" />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <p className="text-gray-600">No statistics available.</p>
+          )}
+        </div>
+      )}
 
       <button
         onClick={handleLogout}

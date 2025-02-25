@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
@@ -17,6 +17,14 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const rememberedEmail = localStorage.getItem("rememberMe");
+    if (rememberedEmail) {
+      setFormData((prev) => ({ ...prev, email: JSON.parse(rememberedEmail) }));
+      setRememberMe(true);
+    }
+  }, []);
 
   const validate = () => {
     const newErrors = {};

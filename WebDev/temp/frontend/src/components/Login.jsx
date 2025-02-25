@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -105,9 +105,10 @@ const Login = () => {
 
           <button
             type="submit"
-            className={`w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+            className={`w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition flex items-center justify-center ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             disabled={loading}
           >
+            {loading ? <Loader2 className="animate-spin mr-2" size={20} /> : null}
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>

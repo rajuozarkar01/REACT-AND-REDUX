@@ -10,7 +10,7 @@ const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    verificationCode: ""
+    verificationCode: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -22,7 +22,8 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
     if (token) {
       const tokenPayload = JSON.parse(atob(token.split(".")[1]));
       if (tokenPayload.exp * 1000 < Date.now()) {
@@ -48,7 +49,8 @@ const Login = () => {
     } else if (formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
     } else if (!/(?=.*[0-9])(?=.*[!@#$%^&*])/.test(formData.password)) {
-      newErrors.password = "Password must include a number and a special character";
+      newErrors.password =
+        "Password must include a number and a special character";
     }
 
     setErrors(newErrors);
@@ -82,7 +84,7 @@ const Login = () => {
     try {
       const res = await axios.post("/api/users/login", {
         email: formData.email,
-        password: formData.password
+        password: formData.password,
       });
 
       if (res.data.mfaRequired) {
@@ -110,10 +112,15 @@ const Login = () => {
             newErrors[error.param] = error.msg;
           });
         } else {
-          toast.error(err.response.data.message || "An unexpected error occurred. Please try again.");
+          toast.error(
+            err.response.data.message ||
+              "An unexpected error occurred. Please try again."
+          );
         }
       } else {
-        toast.error("Network error. Please check your internet connection and try again.");
+        toast.error(
+          "Network error. Please check your internet connection and try again."
+        );
       }
       setErrors(newErrors);
     } finally {
@@ -128,7 +135,7 @@ const Login = () => {
     try {
       const res = await axios.post("/api/users/verify-mfa", {
         email: formData.email,
-        verificationCode: formData.verificationCode
+        verificationCode: formData.verificationCode,
       });
       toast.success("Verification successful.");
       if (rememberMe) {
@@ -154,8 +161,10 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-400 to-purple-500 p-4">
-      <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md animate-fade-in">
-        <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">{mfaStep ? "Enter Verification Code" : "Login"}</h2>
+      <div className="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-md animate-fade-in">
+        <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
+          {mfaStep ? "Enter Verification Code" : "Login"}
+        </h2>
         {!mfaStep ? (
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
@@ -166,9 +175,13 @@ const Login = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className={`w-full px-4 py-3 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${errors.email ? 'border-red-500' : ''}`}
+                className={`w-full px-4 py-3 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
+                  errors.email ? "border-red-500" : ""
+                }`}
               />
-              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
             </div>
 
             <div className="relative">
@@ -179,7 +192,9 @@ const Login = () => {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className={`w-full px-4 py-3 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${errors.password ? 'border-red-500' : ''}`}
+                className={`w-full px-4 py-3 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
+                  errors.password ? "border-red-500" : ""
+                }`}
               />
               <button
                 type="button"
@@ -188,8 +203,22 @@ const Login = () => {
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
-              {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
-              {formData.password && <p className={`text-sm mt-1 ${passwordStrength === 'Strong' ? 'text-green-500' : passwordStrength === 'Moderate' ? 'text-yellow-500' : 'text-red-500'}`}>Password Strength: {passwordStrength}</p>}
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
+              {formData.password && (
+                <p
+                  className={`text-sm mt-1 ${
+                    passwordStrength === "Strong"
+                      ? "text-green-500"
+                      : passwordStrength === "Moderate"
+                      ? "text-yellow-500"
+                      : "text-red-500"
+                  }`}
+                >
+                  Password Strength: {passwordStrength}
+                </p>
+              )}
             </div>
 
             <div className="flex items-center justify-between">
@@ -201,19 +230,28 @@ const Login = () => {
                   onChange={() => setRememberMe(!rememberMe)}
                   className="mr-2"
                 />
-                <label htmlFor="rememberMe" className="text-sm">Remember Me</label>
+                <label htmlFor="rememberMe" className="text-sm">
+                  Remember Me
+                </label>
               </div>
-              <Link to="/forgot-password" className="text-sm text-blue-500 hover:underline">
+              <Link
+                to="/forgot-password"
+                className="text-sm text-blue-500 hover:underline"
+              >
                 Forgot Password?
               </Link>
             </div>
 
             <button
               type="submit"
-              className={`w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-xl shadow-md hover:from-blue-600 hover:to-purple-600 transition transform hover:scale-105 flex items-center justify-center ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-xl shadow-md hover:from-blue-600 hover:to-purple-600 transition transform hover:scale-105 flex items-center justify-center ${
+                loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
               disabled={loading}
             >
-              {loading ? <Loader2 className="animate-spin mr-2" size={20} /> : null}
+              {loading ? (
+                <Loader2 className="animate-spin mr-2" size={20} />
+              ) : null}
               {loading ? "Logging in..." : "Login"}
             </button>
           </form>
@@ -233,10 +271,14 @@ const Login = () => {
 
             <button
               type="submit"
-              className={`w-full bg-green-500 text-white py-3 rounded-xl shadow-md hover:bg-green-600 transition flex items-center justify-center ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`w-full bg-green-500 text-white py-3 rounded-xl shadow-md hover:bg-green-600 transition flex items-center justify-center ${
+                loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
               disabled={loading}
             >
-              {loading ? <Loader2 className="animate-spin mr-2" size={20} /> : null}
+              {loading ? (
+                <Loader2 className="animate-spin mr-2" size={20} />
+              ) : null}
               {loading ? "Verifying..." : "Verify"}
             </button>
           </form>

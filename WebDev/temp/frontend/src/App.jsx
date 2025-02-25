@@ -3,22 +3,28 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-d
 import Register from "./components/Register";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
+import PrivateRoute from "./components/PrivateRoute"; // Import PrivateRoute
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
-  const isAuthenticated = !!localStorage.getItem("token"); // Check JWT token
-
   return (
     <Router>
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
+          {/* Protected Dashboard Route */}
           <Route
             path="/dashboard"
-            element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
           />
+
           {/* Default Route */}
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>

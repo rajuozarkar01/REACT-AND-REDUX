@@ -15,16 +15,8 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState("");
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const rememberedEmail = localStorage.getItem("rememberMe");
-    if (rememberedEmail) {
-      setFormData((prev) => ({ ...prev, email: JSON.parse(rememberedEmail) }));
-      setRememberMe(true);
-    }
-  }, []);
 
   const validate = () => {
     const newErrors = {};
@@ -46,9 +38,22 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const checkPasswordStrength = (password) => {
+    let strength = "Weak";
+    if (password.length >= 8 && /(?=.*[0-9])(?=.*[!@#$%^&*])/.test(password)) {
+      strength = "Strong";
+    } else if (password.length >= 6) {
+      strength = "Moderate";
+    }
+    setPasswordStrength(strength);
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
+    if (e.target.name === "password") {
+      checkPasswordStrength(e.target.value);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -62,13 +67,7 @@ const Login = () => {
       toast.success(res.data.message);
       localStorage.setItem("token", res.data.token);
 
-      if (rememberMe) {
-        localStorage.setItem("rememberMe", JSON.stringify(formData.email));
-      } else {
-        localStorage.removeItem("rememberMe");
-      }
-
-      setFormData({ email: "", password: "" }); // Reset form after successful login
+      setFormData({ email: "", password: "" });
       navigate("/dashboard");
     } catch (err) {
       const newErrors = {};
@@ -133,23 +132,12 @@ const Login = () => {
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
             {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+            {formData.password && <p className={`text-sm mt-1 ${passwordStrength === 'Strong' ? 'text-green-500' : passwordStrength === 'Moderate' ? 'text-yellow-500' : 'text-red-500'}`}>Password Strength: {passwordStrength}</p>}
           </div>
 
-          <div className="flex items-center justify-between">
-            <label className="flex items-center text-sm">
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="mr-2"
-              />
-              Remember Me
-            </label>
-
-            <Link to="/forgot-password" className="text-sm text-blue-500 hover:underline">
-              Forgot Password?
-            </Link>
-          </div>
+          <Link to="/forgot-password" className="text-sm text-blue-500 hover:underline">
+            Forgot Password?
+          </Link>
 
           <button
             type="submit"

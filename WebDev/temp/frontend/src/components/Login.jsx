@@ -10,7 +10,7 @@ const Login = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate(); // For redirection
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,17 +22,12 @@ const Login = () => {
 
     try {
       const res = await axios.post("/api/users/login", formData);
-
-      toast.success(res.data.message); // Show success message
-
-      // Store token in localStorage
+      toast.success(res.data.message);
       localStorage.setItem("token", res.data.token);
-
-      // Redirect to Dashboard
       navigate("/dashboard");
     } catch (err) {
       if (err.response && err.response.data) {
-        toast.error(err.response.data.message); // Show backend error
+        toast.error(err.response.data.message);
       } else {
         toast.error("Login failed. Please try again.");
       }
@@ -42,39 +37,39 @@ const Login = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-      <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          className="w-full p-2 border rounded mb-3"
-        />
-
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-          className="w-full p-2 border rounded mb-4"
-        />
-
-        <button
-          type="submit"
-          className={`w-full bg-blue-500 text-white p-2 rounded ${
-            loading ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-          disabled={loading}
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          <button
+            type="submit"
+            className={`w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={loading}
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

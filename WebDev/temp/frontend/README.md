@@ -1,8 +1,10 @@
-# React + Vite
+Error: Failed to scan for dependencies from entries:
+G:/REACT AND REDUX/WebDev/temp/frontend/index.html
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+X [ERROR] The JSX syntax extension is not currently enabled
 
-Currently, two official plugins are available:
+    src/components/Register.js:39:4:
+      39 │     <div className="bg-white p-6 rounded-lg shadow-md w-full max-w...
+         ╵     ^
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+         *The error you're seeing is due to esbuild treating .js files as plain JavaScript without JSX support. Since your Register.js and other React components use JSX, esbuild needs to parse them correctly.*

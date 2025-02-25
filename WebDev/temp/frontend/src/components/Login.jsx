@@ -84,7 +84,7 @@ const Login = () => {
         email: formData.email,
         password: formData.password
       });
-      
+
       if (res.data.mfaRequired) {
         setMfaStep(true);
         toast.info("Verification code sent to your email.");
@@ -153,11 +153,11 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4 text-center">{mfaStep ? "Enter Verification Code" : "Login"}</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-400 to-purple-500">
+      <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md animate-fade-in">
+        <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">{mfaStep ? "Enter Verification Code" : "Login"}</h2>
         {!mfaStep ? (
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <input
                 type="email"
@@ -166,7 +166,7 @@ const Login = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className={`w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.email ? 'border-red-500' : ''}`}
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${errors.email ? 'border-red-500' : ''}`}
               />
               {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
             </div>
@@ -179,12 +179,12 @@ const Login = () => {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className={`w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.password ? 'border-red-500' : ''}`}
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${errors.password ? 'border-red-500' : ''}`}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500"
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
@@ -192,24 +192,25 @@ const Login = () => {
               {formData.password && <p className={`text-sm mt-1 ${passwordStrength === 'Strong' ? 'text-green-500' : passwordStrength === 'Moderate' ? 'text-yellow-500' : 'text-red-500'}`}>Password Strength: {passwordStrength}</p>}
             </div>
 
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="rememberMe"
-                checked={rememberMe}
-                onChange={() => setRememberMe(!rememberMe)}
-                className="mr-2"
-              />
-              <label htmlFor="rememberMe" className="text-sm">Remember Me</label>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="rememberMe"
+                  checked={rememberMe}
+                  onChange={() => setRememberMe(!rememberMe)}
+                  className="mr-2"
+                />
+                <label htmlFor="rememberMe" className="text-sm">Remember Me</label>
+              </div>
+              <Link to="/forgot-password" className="text-sm text-blue-500 hover:underline">
+                Forgot Password?
+              </Link>
             </div>
-
-            <Link to="/forgot-password" className="text-sm text-blue-500 hover:underline">
-              Forgot Password?
-            </Link>
 
             <button
               type="submit"
-              className={`w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition flex items-center justify-center ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-lg hover:from-blue-600 hover:to-purple-600 transition transform hover:scale-105 flex items-center justify-center ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
               disabled={loading}
             >
               {loading ? <Loader2 className="animate-spin mr-2" size={20} /> : null}
@@ -217,7 +218,7 @@ const Login = () => {
             </button>
           </form>
         ) : (
-          <form onSubmit={handleMfaSubmit} className="space-y-4">
+          <form onSubmit={handleMfaSubmit} className="space-y-5">
             <div>
               <input
                 type="text"
@@ -226,13 +227,13 @@ const Login = () => {
                 value={formData.verificationCode}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <button
               type="submit"
-              className={`w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 transition flex items-center justify-center ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition flex items-center justify-center ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
               disabled={loading}
             >
               {loading ? <Loader2 className="animate-spin mr-2" size={20} /> : null}
@@ -247,14 +248,14 @@ const Login = () => {
             <div className="flex space-x-4">
               <button
                 onClick={handleGoogleLogin}
-                className="flex-1 flex items-center justify-center px-4 py-2 border rounded hover:bg-gray-100"
+                className="flex-1 flex items-center justify-center px-4 py-2 border rounded-lg hover:bg-gray-100 transition"
               >
                 <FcGoogle className="mr-2" size={20} /> Google
               </button>
 
               <button
                 onClick={handleFacebookLogin}
-                className="flex-1 flex items-center justify-center px-4 py-2 border rounded hover:bg-gray-100 text-blue-600"
+                className="flex-1 flex items-center justify-center px-4 py-2 border rounded-lg hover:bg-gray-100 text-blue-600 transition"
               >
                 <FaFacebook className="mr-2" size={20} /> Facebook
               </button>

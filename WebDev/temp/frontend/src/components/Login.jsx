@@ -21,7 +21,6 @@ const Login = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      // Verify token expiration (simple check, adjust based on your backend implementation)
       const tokenPayload = JSON.parse(atob(token.split(".")[1]));
       if (tokenPayload.exp * 1000 < Date.now()) {
         localStorage.removeItem("token");
@@ -86,7 +85,11 @@ const Login = () => {
     } catch (err) {
       const newErrors = {};
       if (err.response && err.response.data) {
-        if (err.response.data.errors) {
+        if (err.response.status === 401) {
+          toast.error("Invalid email or password. Please try again.");
+        } else if (err.response.status === 500) {
+          toast.error("Server error. Please try again later.");
+        } else if (err.response.data.errors) {
           err.response.data.errors.forEach((error) => {
             newErrors[error.param] = error.msg;
           });

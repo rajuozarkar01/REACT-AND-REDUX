@@ -59,11 +59,19 @@ const Login = () => {
 
       navigate("/dashboard");
     } catch (err) {
+      const newErrors = {};
       if (err.response && err.response.data) {
-        toast.error(err.response.data.message);
+        if (err.response.data.errors) {
+          err.response.data.errors.forEach((error) => {
+            newErrors[error.param] = error.msg;
+          });
+        } else {
+          toast.error(err.response.data.message);
+        }
       } else {
         toast.error("Login failed. Please try again.");
       }
+      setErrors(newErrors);
     } finally {
       setLoading(false);
     }

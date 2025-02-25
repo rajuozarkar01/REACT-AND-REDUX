@@ -1,8 +1,4 @@
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+✅ Correct Connection String:
+**mongodb+srv://pcgamedec2024:Starline%4012@cluster0.mongodb.net/myDatabase?retryWrites=true&w=majority**
+_format is below_
+_mongodb+srv://<username>:Starline%4012@cluster0.mongodb.net/<dbname>?retryWrites=true&w=majority_

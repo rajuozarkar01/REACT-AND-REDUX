@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import userRoutes from "./routes/users.js"; // Ensure correct path
+import userRoutes from "./routes/userRoutes.js"; // Ensure correct path
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -21,6 +21,10 @@ app.get("/", (req, res) => {
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => app.listen(PORT, () => console.log(`Server running on port ${PORT}`)))
+  .connect(
+    "mongodb://pcgamedec2024:Starline%4012@starline-shard-00-00.sygqc.mongodb.net:27017,starline-shard-00-01.sygqc.mongodb.net:27017,starline-shard-00-02.sygqc.mongodb.net:27017/myDatabase?ssl=true&replicaSet=atlas-aio6pt-shard-0&authSource=admin&retryWrites=true&w=majority"
+  )
+  .then(() =>
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+  )
   .catch((err) => console.error(err));

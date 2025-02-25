@@ -8,74 +8,68 @@ const Login = () => {
     password: "",
   });
 
-  const { email, password } = formData;
+  const [loading, setLoading] = useState(false);
 
-  // Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!email || !password) {
-      toast.error("Please fill in all fields");
-      return;
-    }
+    setLoading(true);
 
     try {
-      const response = await axios.post("/api/users/login", {
-        email,
-        password,
-      });
-      toast.success("Login successful!");
+      const res = await axios.post("/api/users/login", formData);
 
-      // Store JWT in localStorage
-      localStorage.setItem("token", response.data.token);
+      toast.success(res.data.message); // Show success message
 
-      // Redirect or update UI after login
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Login failed");
+      // Store token in localStorage
+      localStorage.setItem("token", res.data.token);
+
+      // Redirect or perform post-login actions here
+    } catch (err) {
+      if (err.response && err.response.data) {
+        toast.error(err.response.data.message); // Show backend error
+      } else {
+        toast.error("Login failed. Please try again.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-6 max-w-md mx-auto mt-10">
+    <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
       <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
       <form onSubmit={handleSubmit}>
-        {/* Email Field */}
-        <div className="mb-4">
-          <label className="block text-gray-700">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={email}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-            required
-          />
-        </div>
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border rounded mb-3"
+        />
 
-        {/* Password Field */}
-        <div className="mb-4">
-          <label className="block text-gray-700">Password</label>
-          <input
-            type="password"
-            name="password"
-            value={password}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-            required
-          />
-        </div>
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border rounded mb-4"
+        />
 
-        {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
+          className={`w-full bg-blue-500 text-white p-2 rounded ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+          disabled={loading}
         >
-          Login
+          {loading ? "Logging in..." : "Login"}
         </button>
       </form>
     </div>

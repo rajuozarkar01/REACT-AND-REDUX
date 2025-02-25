@@ -30,6 +30,8 @@ const Login = () => {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
+    } else if (!/(?=.*[0-9])(?=.*[!@#$%^&*])/.test(formData.password)) {
+      newErrors.password = "Password must include a number and a special character";
     }
 
     setErrors(newErrors);

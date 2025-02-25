@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { User, Mail, LogOut, Activity, Edit, BarChart2 } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ const Dashboard = () => {
   const [recentActivities, setRecentActivities] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({ name: "", email: "" });
+  const [userStats, setUserStats] = useState([]);
 
   useEffect(() => {
     if (!token) {
@@ -45,8 +47,20 @@ const Dashboard = () => {
       }
     };
 
+    const fetchUserStats = async () => {
+      try {
+        const res = await axios.get("/api/users/stats", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUserStats(res.data);
+      } catch (err) {
+        console.error("Error fetching user stats:", err);
+      }
+    };
+
     fetchUserData();
     fetchRecentActivities();
+    fetchUserStats();
   }, [token, navigate]);
 
   const handleLogout = () => {
@@ -156,7 +170,18 @@ const Dashboard = () => {
         <h2 className="text-2xl font-semibold mb-3 flex items-center">
           <BarChart2 className="w-6 h-6 mr-2 text-indigo-500" /> User Statistics
         </h2>
-        <p className="text-gray-600">(Charts will be integrated here in the next step.)</p>
+        {userStats.length > 0 ? (
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={userStats}>
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="value" fill="#8884d8" />
+            </BarChart>
+          </ResponsiveContainer>
+        ) : (
+          <p className="text-gray-600">No statistics available.</p>
+        )}
       </div>
 
       <button

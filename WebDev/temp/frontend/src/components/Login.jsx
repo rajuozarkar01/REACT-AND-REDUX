@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
@@ -95,6 +95,12 @@ const Login = () => {
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
             {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+          </div>
+
+          <div className="text-right">
+            <Link to="/forgot-password" className="text-sm text-blue-500 hover:underline">
+              Forgot Password?
+            </Link>
           </div>
 
           <button

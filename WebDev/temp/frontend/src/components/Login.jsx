@@ -18,6 +18,20 @@ const Login = () => {
   const [passwordStrength, setPasswordStrength] = useState("");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      // Verify token expiration (simple check, adjust based on your backend implementation)
+      const tokenPayload = JSON.parse(atob(token.split(".")[1]));
+      if (tokenPayload.exp * 1000 < Date.now()) {
+        localStorage.removeItem("token");
+        toast.info("Session expired. Please log in again.");
+      } else {
+        navigate("/dashboard");
+      }
+    }
+  }, [navigate]);
+
   const validate = () => {
     const newErrors = {};
     if (!formData.email) {

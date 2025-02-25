@@ -18,14 +18,16 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState("");
   const [mfaStep, setMfaStep] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     if (token) {
       const tokenPayload = JSON.parse(atob(token.split(".")[1]));
       if (tokenPayload.exp * 1000 < Date.now()) {
         localStorage.removeItem("token");
+        sessionStorage.removeItem("token");
         toast.info("Session expired. Please log in again.");
       } else {
         navigate("/dashboard");
@@ -88,7 +90,11 @@ const Login = () => {
         toast.info("Verification code sent to your email.");
       } else {
         toast.success(res.data.message || "Login successful");
-        localStorage.setItem("token", res.data.token);
+        if (rememberMe) {
+          localStorage.setItem("token", res.data.token);
+        } else {
+          sessionStorage.setItem("token", res.data.token);
+        }
         setFormData({ email: "", password: "", verificationCode: "" });
         navigate("/dashboard");
       }
@@ -125,7 +131,11 @@ const Login = () => {
         verificationCode: formData.verificationCode
       });
       toast.success("Verification successful.");
-      localStorage.setItem("token", res.data.token);
+      if (rememberMe) {
+        localStorage.setItem("token", res.data.token);
+      } else {
+        sessionStorage.setItem("token", res.data.token);
+      }
       navigate("/dashboard");
     } catch (err) {
       toast.error("Invalid verification code. Please try again.");
@@ -180,6 +190,17 @@ const Login = () => {
               </button>
               {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
               {formData.password && <p className={`text-sm mt-1 ${passwordStrength === 'Strong' ? 'text-green-500' : passwordStrength === 'Moderate' ? 'text-yellow-500' : 'text-red-500'}`}>Password Strength: {passwordStrength}</p>}
+            </div>
+
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="rememberMe"
+                checked={rememberMe}
+                onChange={() => setRememberMe(!rememberMe)}
+                className="mr-2"
+              />
+              <label htmlFor="rememberMe" className="text-sm">Remember Me</label>
             </div>
 
             <Link to="/forgot-password" className="text-sm text-blue-500 hover:underline">

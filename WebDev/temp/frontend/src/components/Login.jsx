@@ -68,6 +68,7 @@ const Login = () => {
         localStorage.removeItem("rememberMe");
       }
 
+      setFormData({ email: "", password: "" }); // Reset form after successful login
       navigate("/dashboard");
     } catch (err) {
       const newErrors = {};

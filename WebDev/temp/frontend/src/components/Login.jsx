@@ -64,7 +64,7 @@ const Login = () => {
 
     try {
       const res = await axios.post("/api/users/login", formData);
-      toast.success(res.data.message);
+      toast.success(res.data.message || "Login successful");
       localStorage.setItem("token", res.data.token);
 
       setFormData({ email: "", password: "" });
@@ -77,10 +77,10 @@ const Login = () => {
             newErrors[error.param] = error.msg;
           });
         } else {
-          toast.error(err.response.data.message);
+          toast.error(err.response.data.message || "An unexpected error occurred. Please try again.");
         }
       } else {
-        toast.error("Login failed. Please try again.");
+        toast.error("Network error. Please check your internet connection and try again.");
       }
       setErrors(newErrors);
     } finally {

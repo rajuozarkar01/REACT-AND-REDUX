@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -9,6 +10,7 @@ const Login = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // For redirection
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -26,7 +28,8 @@ const Login = () => {
       // Store token in localStorage
       localStorage.setItem("token", res.data.token);
 
-      // Redirect or perform post-login actions here
+      // Redirect to Dashboard
+      navigate("/dashboard");
     } catch (err) {
       if (err.response && err.response.data) {
         toast.error(err.response.data.message); // Show backend error

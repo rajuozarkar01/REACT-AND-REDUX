@@ -79,3 +79,48 @@ _db.users.updateOne(
 { $set: { password: "$2b$10$y7cveRxU0k4BW5UaHnRq9edQzlrtnBzxx3keAmf33dhLdHeY5xh6u" } }
 )_
 **resolved : your_jwt_token_here**
+
+_✅ 3. Login User & Get Token
+POST : http://localhost:5002/api/users/login
+{
+"email": "john@example.com",
+"password": "123456"
+}_
+result : **"message": "Invalid credentials"**
+**steps taken**
+1️⃣ Ensure User Exists in the Database
+2️⃣ Verify the Stored Password
+3️⃣ Confirm Password Comparison
+4️⃣ Ensure Password Hashing in Registration
+🔹 Possible Issues & Fixes
+✅ Issue 1: Password Mismatch in bcrypt.compare
+✅ Issue 2: Incorrect Password Being Sent
+✅ Issue 3: Login Route is Skipping Execution
+_Make sure your request URL is correct in Postman:_
+_http://localhost:5002/api/users/login(inthis case: )_
+🔍 Possible Issues & Fixes:
+1️⃣ Check Validation Errors
+2️⃣ Check Hashed Password Comparison
+3️⃣ Try Manually Comparing Password
+4️⃣ Fix Debugging in Login Route
+✅ Fix: Use CommonJS Syntax in Node.js REPL
+_const bcrypt = require("bcryptjs");_
+**> Password Match: false**
+_The issue is clear now: the password stored in the database is not matching the entered password even though they seem to be the same._
+🔍 What You Can Do:
+✅ Solution 1: Reset the User’s Password
+Since the stored hash doesn't match the one generated for "123456", try manually updating the password in MongoDB:
+
+1. Generate a new hash for "123456" in your Node.js REPL:
+   **const bcrypt = require("bcryptjs");**
+   **bcrypt.hash("123456", 10).then(console.log);**
+2. Copy the new hash and update it in MongoDB
+   _db.users.updateOne(
+   { email: "john@example.com" },
+   { $set: { password: "NEW_HASH_HERE" } }
+   );_
+3. **new hash updated it in MongoDB: via Postman**
+   POST : http://localhost:5002/api/users/login
+   JSON: _{"email": "john@example.com", "password": "123456"}_
+   result : 200 OK
+   _Now that the correct hash is stored, bcrypt is successfully verifying the password_

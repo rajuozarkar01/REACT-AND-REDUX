@@ -73,6 +73,7 @@ router.post(
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log("Login Request Body:", req.body);
       return res.status(400).json({ errors: errors.array() });
     }
 
@@ -104,6 +105,7 @@ router.post(
       res.status(500).json({ message: "Error logging in", error });
     }
   }
+  
 );
 
 /**

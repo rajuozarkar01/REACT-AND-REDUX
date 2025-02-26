@@ -1,16 +1,18 @@
-// backend/routes/userRoutes.js
-
 import express from "express";
 import { body, validationResult } from "express-validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
-import authMiddleware from "../middleware/authMiddleware.js";
+import { authenticateToken, isAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 
-// REGISTER User - POST /api/users/register
+/**
+ * @route   POST /api/users/register
+ * @desc    Register a new user
+ * @access  Public
+ */
 router.post(
   "/register",
   [
@@ -30,7 +32,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     try {
       let user = await User.findOne({ email });
@@ -39,10 +41,17 @@ router.post(
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      user = new User({ name, email, password: hashedPassword });
+      user = new User({
+        name,
+        email,
+        password: hashedPassword,
+        role: role || "user",
+      });
       await user.save();
 
-      const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
+      const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
+        expiresIn: "1h",
+      });
       res.status(201).json({ message: "User registered successfully", token });
     } catch (error) {
       res.status(500).json({ message: "Error registering user", error });
@@ -50,7 +59,11 @@ router.post(
   }
 );
 
-// LOGIN User - POST /api/users/login
+/**
+ * @route   POST /api/users/login
+ * @desc    Authenticate user & get token
+ * @access  Public
+ */
 router.post(
   "/login",
   [
@@ -76,7 +89,9 @@ router.post(
         return res.status(400).json({ message: "Invalid credentials" });
       }
 
-      const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
+      const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
+        expiresIn: "1h",
+      });
       res.status(200).json({ message: "Login successful", token });
     } catch (error) {
       res.status(500).json({ message: "Error logging in", error });
@@ -84,44 +99,12 @@ router.post(
   }
 );
 
-// CREATE User - POST /api/users (Protected)
-router.post(
-  "/",
-  authMiddleware,
-  [
-    body("name")
-      .notEmpty()
-      .withMessage("Name is required")
-      .isLength({ min: 3 })
-      .withMessage("Name must be at least 3 characters"),
-    body("email").isEmail().withMessage("Invalid email address"),
-    body("phone")
-      .notEmpty()
-      .withMessage("Phone is required")
-      .isMobilePhone()
-      .withMessage("Invalid phone number"),
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    try {
-      const { name, email, phone } = req.body;
-      const newUser = new User({ name, email, phone });
-      await newUser.save();
-      res
-        .status(201)
-        .json({ message: "User created successfully", user: newUser });
-    } catch (error) {
-      res.status(500).json({ message: "Error creating user", error });
-    }
-  }
-);
-
-// GET All Users - GET /api/users (Protected)
-router.get("/", authMiddleware, async (req, res) => {
+/**
+ * @route   GET /api/users
+ * @desc    Get all users (Admin Only)
+ * @access  Private (Admin)
+ */
+router.get("/", authenticateToken, isAdmin, async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).json(users);
@@ -130,8 +113,12 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
-// GET Single User - GET /api/users/:id (Protected)
-router.get("/:id", authMiddleware, async (req, res) => {
+/**
+ * @route   GET /api/users/:id
+ * @desc    Get a single user by ID
+ * @access  Private
+ */
+router.get("/:id", authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -141,20 +128,22 @@ router.get("/:id", authMiddleware, async (req, res) => {
   }
 });
 
-// UPDATE User - PUT /api/users/:id (Protected)
+/**
+ * @route   PUT /api/users/:id
+ * @desc    Update user details
+ * @access  Private (Admin)
+ */
 router.put(
   "/:id",
-  authMiddleware,
+  authenticateToken,
+  isAdmin,
   [
     body("name")
       .optional()
       .isLength({ min: 3 })
       .withMessage("Name must be at least 3 characters"),
     body("email").optional().isEmail().withMessage("Invalid email address"),
-    body("phone")
-      .optional()
-      .isMobilePhone()
-      .withMessage("Invalid phone number"),
+    body("role").optional().isIn(["user", "admin"]).withMessage("Invalid role"),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -179,8 +168,12 @@ router.put(
   }
 );
 
-// DELETE User - DELETE /api/users/:id (Protected)
-router.delete("/:id", authMiddleware, async (req, res) => {
+/**
+ * @route   DELETE /api/users/:id
+ * @desc    Delete a user
+ * @access  Private (Admin)
+ */
+router.delete("/:id", authenticateToken, isAdmin, async (req, res) => {
   try {
     const deletedUser = await User.findByIdAndDelete(req.params.id);
     if (!deletedUser)

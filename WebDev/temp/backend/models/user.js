@@ -18,12 +18,22 @@ const userSchema = new mongoose.Schema({
       "Please provide a valid email address",
     ],
   },
+  password: {
+    type: String,
+    required: [true, "Password is required"],
+  },
+  role: {
+    type: String,
+    enum: ["user", "admin"], // Ensures only these values are used
+    default: "user", // Default role is "user"
+  },
   createdAt: {
     type: Date,
     default: Date.now,
   },
 });
 
+// Create and export the User model
 const User = mongoose.model("User", userSchema);
 
 export default User;

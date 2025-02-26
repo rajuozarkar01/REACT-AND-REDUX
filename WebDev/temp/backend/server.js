@@ -1,18 +1,22 @@
 import express from "express";
 import mongoose from "mongoose";
-import userRoutes from "./routes/userRoutes.js"; // Ensure correct path
 import dotenv from "dotenv";
+import userRoutes from "./routes/userRoutes.js";
+import serviceRoutes from "./routes/serviceRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5002;
 
 // Middleware
 app.use(express.json());
 
 // Routes
-app.use("/api/users", userRoutes); // This is crucial
+app.use("/api/users", userRoutes);
+app.use("/api/services", serviceRoutes);
+app.use("/api/orders", orderRoutes);
 
 // Basic route to confirm server is running
 app.get("/", (req, res) => {

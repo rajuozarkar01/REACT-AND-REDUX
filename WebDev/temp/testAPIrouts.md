@@ -41,3 +41,222 @@
 • If you get validation errors, check if the request body matches the expected format.
 
 ---
+
+Here’s how you can test your API in **Postman** with the required paths and JSON bodies.
+
+---
+
+## ✅ **1. Register a User**
+
+**Path:** `POST http://localhost:5000/api/users/register`  
+**JSON Body:**
+
+```json
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "123456",
+  "role": "user"
+}
+```
+
+📌 **Expected Response (201 Created)**
+
+```json
+{
+  "message": "User registered successfully",
+  "token": "your_jwt_token_here"
+}
+```
+
+---
+
+## ✅ **2. Register an Admin**
+
+**Path:** `POST http://localhost:5000/api/users/register`  
+**JSON Body:**
+
+```json
+{
+  "name": "Admin User",
+  "email": "admin@example.com",
+  "password": "admin123",
+  "role": "admin"
+}
+```
+
+📌 **Expected Response (201 Created)**
+
+```json
+{
+  "message": "User registered successfully",
+  "token": "your_jwt_token_here"
+}
+```
+
+🔹 **Save the token for future admin-only requests.**
+
+---
+
+## ✅ **3. Login User & Get Token**
+
+**Path:** `POST http://localhost:5000/api/users/login`  
+**JSON Body:**
+
+```json
+{
+  "email": "john@example.com",
+  "password": "123456"
+}
+```
+
+📌 **Expected Response (200 OK)**
+
+```json
+{
+  "message": "Login successful",
+  "token": "your_jwt_token_here"
+}
+```
+
+🔹 **Copy the token and use it for further requests.**
+
+---
+
+## ✅ **4. Login Admin & Get Token**
+
+**Path:** `POST http://localhost:5000/api/users/login`  
+**JSON Body:**
+
+```json
+{
+  "email": "admin@example.com",
+  "password": "admin123"
+}
+```
+
+📌 **Expected Response (200 OK)**
+
+```json
+{
+  "message": "Login successful",
+  "token": "your_admin_jwt_token_here"
+}
+```
+
+🔹 **Save this token for admin-only access.**
+
+---
+
+## ❌ **5. Try Accessing Admin-Only Routes with a Non-Admin User**
+
+**Path:** `GET http://localhost:5000/api/users`  
+**Headers:**
+
+```
+Authorization: Bearer your_user_jwt_token_here
+```
+
+📌 **Expected Response (403 Forbidden)**
+
+```json
+{
+  "message": "Access denied. Admins only."
+}
+```
+
+🔹 **If you get a 403 error, that means role-based access is working correctly!**
+
+---
+
+## ✅ **6. Get All Users as an Admin**
+
+**Path:** `GET http://localhost:5000/api/users`  
+**Headers:**
+
+```
+Authorization: Bearer your_admin_jwt_token_here
+```
+
+📌 **Expected Response (200 OK)**
+
+```json
+[
+  {
+    "_id": "user_id_1",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "role": "user"
+  },
+  {
+    "_id": "user_id_2",
+    "name": "Admin User",
+    "email": "admin@example.com",
+    "role": "admin"
+  }
+]
+```
+
+🔹 **If this works, your admin can successfully fetch all users!**
+
+---
+
+## ✅ **7. Update a User (Admin Only)**
+
+**Path:** `PUT http://localhost:5000/api/users/{user_id}`  
+**Headers:**
+
+```
+Authorization: Bearer your_admin_jwt_token_here
+```
+
+**JSON Body (Example Update for John Doe):**
+
+```json
+{
+  "role": "admin"
+}
+```
+
+📌 **Expected Response (200 OK)**
+
+```json
+{
+  "message": "User updated successfully",
+  "user": {
+    "_id": "user_id_1",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "role": "admin"
+  }
+}
+```
+
+---
+
+## ✅ **8. Delete a User (Admin Only)**
+
+**Path:** `DELETE http://localhost:5000/api/users/{user_id}`  
+**Headers:**
+
+```
+Authorization: Bearer your_admin_jwt_token_here
+```
+
+📌 **Expected Response (200 OK)**
+
+```json
+{
+  "message": "User deleted successfully"
+}
+```
+
+---
+
+## 🚀 **Final Steps**
+
+- If all tests pass, your **authentication, role-based authorization, and CRUD operations** are working correctly.
+- **If anything fails**, check the server logs (`console.log` or error messages) for debugging.
+- **You can also add more roles** (e.g., `moderator`) and expand access controls.
+
+Let me know if you need further improvements! 🚀🔥

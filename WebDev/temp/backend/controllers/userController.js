@@ -1,54 +1,142 @@
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 
 /**
- * Middleware to authenticate token and attach user to request
+ * @desc    Register a new user
+ * @route   POST /api/users/register
+ * @access  Public
  */
-export const authenticateToken = async (req, res, next) => {
+export const registerUser = async (req, res) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ message: "Access denied. No token provided." });
+    const { name, email, password, role } = req.body;
+
+    // Check if user already exists
+    let user = await User.findOne({ email });
+    if (user) {
+      return res.status(400).json({ message: "User already exists" });
     }
 
-    const token = authHeader.split(" ")[1];
-    const decoded = jwt.verify(token, JWT_SECRET);
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Fetch user details from DB (excluding password)
-    const user = await User.findById(decoded.id).select("-password");
-    if (!user) {
-      return res.status(401).json({ message: "User not found. Invalid token." });
-    }
+    // Create new user
+    user = new User({
+      name,
+      email,
+      password: hashedPassword,
+      role: role || "user",
+    });
 
-    req.user = user; // Attach user object to request
-    next();
+    await user.save();
+
+    // Generate JWT Token
+    const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    res.status(201).json({ message: "User registered successfully", token });
   } catch (error) {
-    console.error("JWT Authentication Error:", error.message);
-
-    let errorMessage = "Authentication failed.";
-    if (error.name === "TokenExpiredError") {
-      errorMessage = "Token has expired. Please log in again.";
-    } else if (error.name === "JsonWebTokenError") {
-      errorMessage = "Invalid token. Access denied.";
-    }
-
-    return res.status(403).json({ message: errorMessage });
+    res.status(500).json({ message: "Error registering user", error });
   }
 };
 
 /**
- * Middleware to check if the user has an admin role
+ * @desc    Authenticate user & get token
+ * @route   POST /api/users/login
+ * @access  Public
  */
-export const isAdmin = (req, res, next) => {
-  if (!req.user) {
-    return res.status(401).json({ message: "Authentication required." });
-  }
+export const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-  if (req.user.role !== "admin") {
-    return res.status(403).json({ message: "Access denied. Admins only." });
-  }
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
 
-  next();
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    res.status(200).json({ message: "Login successful", token });
+  } catch (error) {
+    res.status(500).json({ message: "Error logging in", error });
+  }
+};
+
+/**
+ * @desc    Get all users (Admin only)
+ * @route   GET /api/users
+ * @access  Private (Admin)
+ */
+export const getUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching users", error });
+  }
+};
+
+/**
+ * @desc    Get user by ID
+ * @route   GET /api/users/:id
+ * @access  Private
+ */
+export const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching user", error });
+  }
+};
+
+/**
+ * @desc    Update user details (Admin only)
+ * @route   PUT /api/users/:id
+ * @access  Private (Admin)
+ */
+export const updateUser = async (req, res) => {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+
+    if (!updatedUser)
+      return res.status(404).json({ message: "User not found" });
+
+    res
+      .status(200)
+      .json({ message: "User updated successfully", user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating user", error });
+  }
+};
+
+/**
+ * @desc    Delete a user (Admin only)
+ * @route   DELETE /api/users/:id
+ * @access  Private (Admin)
+ */
+export const deleteUser = async (req, res) => {
+  try {
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    if (!deletedUser)
+      return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting user", error });
+  }
 };

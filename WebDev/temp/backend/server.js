@@ -23,6 +23,10 @@ app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
+//login route, controller: user login, password verification, and JWT token generation
+const authRoutes = require("./routes/authRoutes");
+app.use("/api/auth", authRoutes);
+
 // Connect to MongoDB
 mongoose
   .connect(

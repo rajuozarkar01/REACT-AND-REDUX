@@ -19,11 +19,13 @@ export const authenticateToken = async (req, res, next) => {
     const decoded = jwt.verify(token, JWT_SECRET);
 
     // Fetch user details from DB (excluding password)
-    const user = await User.findById(decoded.id).select("-password");
+    const user = await User.findById(decoded._id || decoded.id).select(
+      "-password"
+    );
     if (!user) {
       return res
         .status(401)
-        .json({ message: "User not found. Invalid token." });
+        .json({ message: "Invalid token. User does not exist." });
     }
 
     req.user = user; // Attach user object to request
@@ -33,9 +35,9 @@ export const authenticateToken = async (req, res, next) => {
 
     let errorMessage = "Authentication failed.";
     if (error.name === "TokenExpiredError") {
-      errorMessage = "Token has expired. Please log in again.";
+      errorMessage = "Token expired. Please log in again.";
     } else if (error.name === "JsonWebTokenError") {
-      errorMessage = "Invalid token. Access denied.";
+      errorMessage = "Invalid token.";
     }
 
     return res.status(403).json({ message: errorMessage });

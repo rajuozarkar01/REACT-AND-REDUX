@@ -6,22 +6,42 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Check if token exists in localStorage
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        const userData = JSON.parse(atob(token.split(".")[1])); // Decode JWT payload
+        const base64Url = token.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split("")
+            .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+            .join("")
+        );
+        const userData = JSON.parse(jsonPayload);
         setUser(userData);
       } catch (error) {
         console.error("Invalid token:", error);
+        localStorage.removeItem("token"); // Remove invalid token
       }
     }
   }, []);
 
   const login = (token) => {
-    localStorage.setItem("token", token);
-    const userData = JSON.parse(atob(token.split(".")[1]));
-    setUser(userData);
+    try {
+      localStorage.setItem("token", token);
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split("")
+          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+          .join("")
+      );
+      const userData = JSON.parse(jsonPayload);
+      setUser(userData);
+    } catch (error) {
+      console.error("Error decoding token:", error);
+    }
   };
 
   const logout = () => {

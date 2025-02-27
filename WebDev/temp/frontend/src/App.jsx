@@ -8,7 +8,7 @@ import {
 import Register from "./components/Register";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
-import AdminDashboard from "./components/AdminDashboard"; // Import Admin Page
+import AdminDashboard from "./components/Dashboard"; // Import Admin Page
 import PrivateRoute from "./components/PrivateRoute"; // Import PrivateRoute
 import { AuthProvider } from "./context/AuthContext"; // Import AuthProvider
 import { ToastContainer } from "react-toastify";

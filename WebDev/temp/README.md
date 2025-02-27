@@ -127,3 +127,20 @@ Since the stored hash doesn't match the one generated for "123456", try manually
 
 **backend/middleware/authMiddleware.js**
 _authMiddleware.js is handling authentication (authenticateToken) and admin authorization (isAdmin)._
+
+**login Page Poped up while login** :
+_Network error 'please check your internet connection and come again._
+**debugging**
+
+1. _file:///G:/REACT%20AND%20REDUX/WebDev/temp/backend/routes/userRoutes.js:8 updateUser,_
+   ^^^^^^^^^^
+   _SyntaxError: The requested module '../controllers/userController.js does not provide an export named 'updateUser'_
+   **updaet**
+   _Your userController.js does not contain getUsers, but your userRoutes.js is trying to import it. That’s why the server crashes._
+
+2. _file:///G:/REACT%20AND%20REDUX/WebDev/temp/backend/routes/userRoutes.js:8
+   updateUser,
+   ^^^^^^^^^^
+   SyntaxError: The requested module '../controllers/userController.js' does not provide an export named 'updateUse updateUser,_
+   **updaet**
+   _Your userController.js is missing the updateUser function, but your userRoutes.js is trying to import it_

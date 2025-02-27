@@ -29,7 +29,9 @@ export const registerUser = async (req, res) => {
 
     await user.save();
 
-    const token = jwt.sign({ _id: user._id, role: user.role }, JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ _id: user._id, role: user.role }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
     res.status(201).json({ message: "User registered successfully", token });
   } catch (error) {
@@ -56,7 +58,9 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ _id: user._id, role: user.role }, JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ _id: user._id, role: user.role }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
     res.status(200).json({ message: "Login successful", token });
   } catch (error) {
@@ -81,17 +85,74 @@ export const getUserById = async (req, res) => {
 };
 
 /**
+ * @desc    Get all users
+ * @route   GET /api/users
+ * @access  Private (Admin)
+ */
+export const getUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching users", error });
+  }
+};
+
+/**
+ * @desc    Update user details
+ * @route   PUT /api/users/:id
+ * @access  Private (Admin or User updating own profile)
+ */
+export const updateUser = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (
+      req.user._id.toString() !== user._id.toString() &&
+      req.user.role !== "admin"
+    ) {
+      return res.status(403).json({ message: "Unauthorized action" });
+    }
+
+    user.name = name || user.name;
+    user.email = email || user.email;
+
+    if (password) {
+      user.password = await bcrypt.hash(password, 10);
+    }
+
+    await user.save();
+
+    res.status(200).json({ message: "User updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating user", error });
+  }
+};
+
+/**
  * @desc    Delete a user (Admin only, cannot delete self)
  * @route   DELETE /api/users/:id
  * @access  Private (Admin)
  */
 export const deleteUser = async (req, res) => {
-  if (req.user._id.toString() === req.params.id) {
-    return res.status(400).json({ message: "Admins cannot delete themselves." });
-  }
-
   try {
-    await User.findByIdAndDelete(req.params.id);
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (req.user._id.toString() === user._id.toString()) {
+      return res
+        .status(400)
+        .json({ message: "Admins cannot delete themselves." });
+    }
+
+    await user.remove();
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error deleting user", error });

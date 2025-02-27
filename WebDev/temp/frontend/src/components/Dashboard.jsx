@@ -2,8 +2,23 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { User, Mail, LogOut, Activity, Edit, BarChart2, Shield } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  User,
+  Mail,
+  LogOut,
+  Activity,
+  Edit,
+  BarChart2,
+  Shield,
+} from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -13,6 +28,7 @@ const Dashboard = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({ name: "", email: "" });
   const [userStats, setUserStats] = useState([]);
+  const [loading, setLoading] = useState(true); // Added loading state
 
   useEffect(() => {
     if (!token) {
@@ -33,6 +49,8 @@ const Dashboard = () => {
         toast.error("Session expired. Please log in again.");
         localStorage.removeItem("token");
         navigate("/login");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -48,6 +66,7 @@ const Dashboard = () => {
     };
 
     const fetchUserStats = async () => {
+      if (user?.role !== "admin") return; // Prevent non-admins from fetching stats
       try {
         const res = await axios.get("/api/users/stats", {
           headers: { Authorization: `Bearer ${token}` },
@@ -61,7 +80,7 @@ const Dashboard = () => {
     fetchUserData();
     fetchRecentActivities();
     fetchUserStats();
-  }, [token, navigate]);
+  }, [token, navigate, user?.role]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -91,6 +110,8 @@ const Dashboard = () => {
     }
   };
 
+  if (loading) return <p className="text-lg">Loading user data...</p>;
+
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-4">Welcome to the Dashboard! 🎉</h1>
@@ -98,15 +119,21 @@ const Dashboard = () => {
         <div className="mb-6 bg-white p-4 rounded shadow-md">
           <div className="flex items-center mb-2">
             <User className="w-5 h-5 mr-2 text-blue-500" />
-            <p className="text-lg">Logged in as: <strong>{user.name}</strong></p>
+            <p className="text-lg">
+              Logged in as: <strong>{user.name}</strong>
+            </p>
           </div>
           <div className="flex items-center mb-2">
             <Mail className="w-5 h-5 mr-2 text-green-500" />
-            <p className="text-lg">Email: <strong>{user.email}</strong></p>
+            <p className="text-lg">
+              Email: <strong>{user.email}</strong>
+            </p>
           </div>
           <div className="flex items-center mb-4">
             <Shield className="w-5 h-5 mr-2 text-red-500" />
-            <p className="text-lg">Role: <strong>{user.role}</strong></p>
+            <p className="text-lg">
+              Role: <strong>{user.role}</strong>
+            </p>
           </div>
 
           {isEditing ? (
@@ -134,16 +161,26 @@ const Dashboard = () => {
                 />
               </div>
               <div className="flex space-x-2">
-                <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">
+                <button
+                  type="submit"
+                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+                >
                   Save
                 </button>
-                <button type="button" onClick={handleEditToggle} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition">
+                <button
+                  type="button"
+                  onClick={handleEditToggle}
+                  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition"
+                >
                   Cancel
                 </button>
               </div>
             </form>
           ) : (
-            <button onClick={handleEditToggle} className="mt-4 bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition flex items-center">
+            <button
+              onClick={handleEditToggle}
+              className="mt-4 bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition flex items-center"
+            >
               <Edit className="w-5 h-5 mr-2" /> Edit Profile
             </button>
           )}
@@ -154,7 +191,8 @@ const Dashboard = () => {
 
       <div className="mb-6">
         <h2 className="text-2xl font-semibold mb-3 flex items-center">
-          <Activity className="w-6 h-6 mr-2 text-purple-500" /> Recent Activities
+          <Activity className="w-6 h-6 mr-2 text-purple-500" /> Recent
+          Activities
         </h2>
         {recentActivities.length > 0 ? (
           <ul className="space-y-2">
@@ -169,10 +207,11 @@ const Dashboard = () => {
         )}
       </div>
 
-      {user && user.role === "admin" && (
+      {user?.role === "admin" && (
         <div className="mb-6">
           <h2 className="text-2xl font-semibold mb-3 flex items-center">
-            <BarChart2 className="w-6 h-6 mr-2 text-indigo-500" /> User Statistics
+            <BarChart2 className="w-6 h-6 mr-2 text-indigo-500" /> User
+            Statistics
           </h2>
           {userStats.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>

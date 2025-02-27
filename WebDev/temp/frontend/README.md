@@ -1,21 +1,8 @@
-Error: Failed to scan for dependencies from entries:
-G:/REACT AND REDUX/WebDev/temp/frontend/index.html
-
-X [ERROR] The JSX syntax extension is not currently enabled
-
-    src/components/Register.js:39:4:
-      39 │     <div className="bg-white p-6 rounded-lg shadow-md w-full max-w...
-         ╵     ^
-
-_The error you're seeing is due to esbuild treating .js files as plain JavaScript without JSX support. Since your Register.js and other React components use JSX, esbuild needs to parse them correctly_
-
-[plugin:vite:import-analysis] Failed to resolve import "react-icons/fc" from "src/components/Login.jsx". Does the file exist?
-_This usually happens if the react-icons package isn't installed or if there's an issue with the path._
 **Steps to start mongoDB**
 ✅ Step 1: Get Your MongoDB Atlas Connection String
 Go to MongoDB Atlas and log in.
 Select your database cluster.
-Click "Connect" → "Connect your application".
+Click "Connect" → "Connect your application".(compass/atlas, etc.)
 Copy the connection string. It looks like this:
 mongodb+srv://<username>:<password>@cluster0.mongodb.net/?retryWrites=true&w=majority
 Replace <username> and <password> with your actual MongoDB credentials.

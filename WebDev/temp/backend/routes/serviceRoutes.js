@@ -1,10 +1,11 @@
 import express from "express";
 import Service from "../models/Service.js";
+import { authenticateToken, isAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Create a new service
-router.post("/", async (req, res) => {
+// ✅ Create a new service (Protected - Admin only)
+router.post("/", authenticateToken, isAdmin, async (req, res) => {
   try {
     const newService = new Service(req.body);
     await newService.save();
@@ -14,7 +15,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Get all services
+// ✅ Get all services (Public)
 router.get("/", async (req, res) => {
   try {
     const services = await Service.find();
@@ -24,7 +25,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get a single service by ID
+// ✅ Get a single service by ID (Public)
 router.get("/:id", async (req, res) => {
   try {
     const service = await Service.findById(req.params.id);
@@ -35,8 +36,8 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Update a service
-router.put("/:id", async (req, res) => {
+// ✅ Update a service (Protected - Admin only)
+router.put("/:id", authenticateToken, isAdmin, async (req, res) => {
   try {
     const updatedService = await Service.findByIdAndUpdate(
       req.params.id,
@@ -49,8 +50,8 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// Delete a service
-router.delete("/:id", async (req, res) => {
+// ✅ Delete a service (Protected - Admin only)
+router.delete("/:id", authenticateToken, isAdmin, async (req, res) => {
   try {
     await Service.findByIdAndDelete(req.params.id);
     res.json({ message: "Service deleted successfully" });

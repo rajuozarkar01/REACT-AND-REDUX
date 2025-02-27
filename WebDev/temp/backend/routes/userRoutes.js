@@ -1,7 +1,5 @@
 import express from "express";
-import { body, validationResult } from "express-validator";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import { body } from "express-validator";
 import {
   registerUser,
   loginUser,
@@ -59,19 +57,24 @@ router.get("/", authenticateToken, isAdmin, getUsers);
 /**
  * @route   GET /api/users/:id
  * @desc    Get a single user by ID
- * @access  Private
+ * @access  Private (User or Admin)
  */
-router.get("/:id", authenticateToken, getUserById);
+router.get("/:id", authenticateToken, async (req, res, next) => {
+  // Allow users to access their own profile or admins to access any profile
+  if (req.user._id.toString() === req.params.id || req.user.role === "admin") {
+    return getUserById(req, res, next);
+  }
+  return res.status(403).json({ message: "Access denied." });
+});
 
 /**
  * @route   PUT /api/users/:id
  * @desc    Update user details
- * @access  Private (Admin)
+ * @access  Private (User can update their own profile, Admin can update anyone)
  */
 router.put(
   "/:id",
   authenticateToken,
-  isAdmin,
   [
     body("name")
       .optional()
@@ -80,7 +83,16 @@ router.put(
     body("email").optional().isEmail().withMessage("Invalid email address"),
     body("role").optional().isIn(["user", "admin"]).withMessage("Invalid role"),
   ],
-  updateUser
+  async (req, res, next) => {
+    // Allow users to update their own profile or admins to update any profile
+    if (
+      req.user._id.toString() === req.params.id ||
+      req.user.role === "admin"
+    ) {
+      return updateUser(req, res, next);
+    }
+    return res.status(403).json({ message: "Access denied." });
+  }
 );
 
 /**

@@ -124,3 +124,6 @@ Since the stored hash doesn't match the one generated for "123456", try manually
    JSON: _{"email": "john@example.com", "password": "123456"}_
    result : 200 OK
    _Now that the correct hash is stored, bcrypt is successfully verifying the password_
+
+**backend/middleware/authMiddleware.js**
+_authMiddleware.js is handling authentication (authenticateToken) and admin authorization (isAdmin)._

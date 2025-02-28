@@ -24,14 +24,24 @@ const Login = () => {
   useEffect(() => {
     const token =
       localStorage.getItem("token") || sessionStorage.getItem("token");
+
     if (token) {
-      const tokenPayload = JSON.parse(atob(token.split(".")[1]));
-      if (tokenPayload.exp * 1000 < Date.now()) {
+      try {
+        const tokenPayload = JSON.parse(atob(token.split(".")[1])); // Decode JWT
+
+        if (tokenPayload.exp * 1000 < Date.now()) {
+          // Token expired: Remove it and show a message
+          localStorage.removeItem("token");
+          sessionStorage.removeItem("token");
+          toast.info("Session expired. Please log in again.");
+          navigate("/login"); // Redirect to login page
+        }
+      } catch (error) {
+        console.error("Invalid token:", error);
         localStorage.removeItem("token");
         sessionStorage.removeItem("token");
-        toast.info("Session expired. Please log in again.");
-      } else {
-        navigate("/dashboard");
+        toast.error("Invalid session. Please log in again.");
+        navigate("/login");
       }
     }
   }, [navigate]);
@@ -82,7 +92,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post("/api/users/login", {
+      const res = await axios.post("http://localhost:5002/api/users/login", {
         email: formData.email,
         password: formData.password,
       });
@@ -91,61 +101,44 @@ const Login = () => {
         setMfaStep(true);
         toast.info("Verification code sent to your email.");
       } else {
+        // ✅ Ensure correct user structure
+        const userData = {
+          _id: res.data._id,
+          email: res.data.email,
+          role: res.data.role,
+        };
+
+        const token = res.data.token;
+
+        console.log("Login Success! User Data:", userData);
+        console.log("Login Success! Token:", token);
+
         toast.success(res.data.message || "Login successful");
+
+        // ✅ Store token & user data correctly
         if (rememberMe) {
-          localStorage.setItem("token", res.data.token);
+          localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(userData));
         } else {
-          sessionStorage.setItem("token", res.data.token);
+          sessionStorage.setItem("token", token);
+          sessionStorage.setItem("user", JSON.stringify(userData));
         }
+
         setFormData({ email: "", password: "", verificationCode: "" });
-        navigate("/dashboard");
+
+        // Reload page after successful login
+        window.location.href = "/dashboard";
       }
     } catch (err) {
-      const newErrors = {};
+      console.error("Login Error:", err);
+
       if (err.response && err.response.data) {
-        if (err.response.status === 401) {
-          toast.error("Invalid email or password. Please try again.");
-        } else if (err.response.status === 500) {
-          toast.error("Server error. Please try again later.");
-        } else if (err.response.data.errors) {
-          err.response.data.errors.forEach((error) => {
-            newErrors[error.param] = error.msg;
-          });
-        } else {
-          toast.error(
-            err.response.data.message ||
-              "An unexpected error occurred. Please try again."
-          );
-        }
-      } else {
         toast.error(
-          "Network error. Please check your internet connection and try again."
+          err.response.data.message || "Login failed. Please try again."
         );
-      }
-      setErrors(newErrors);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleMfaSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      const res = await axios.post("/api/users/verify-mfa", {
-        email: formData.email,
-        verificationCode: formData.verificationCode,
-      });
-      toast.success("Verification successful.");
-      if (rememberMe) {
-        localStorage.setItem("token", res.data.token);
       } else {
-        sessionStorage.setItem("token", res.data.token);
+        toast.error("Network error. Please check your connection.");
       }
-      navigate("/dashboard");
-    } catch (err) {
-      toast.error("Invalid verification code. Please try again.");
     } finally {
       setLoading(false);
     }

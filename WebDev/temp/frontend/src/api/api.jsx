@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api/users", // Adjust if your backend runs on a different port
+  baseURL: "http://localhost:5002/api/users", // Backend URL
 });
 
 // Register User
@@ -10,7 +10,7 @@ export const registerUser = async (userData) => {
     const response = await API.post("/register", userData);
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw error.response.data || { message: "Network error" };
   }
 };
 
@@ -20,6 +20,6 @@ export const loginUser = async (userData) => {
     const response = await API.post("/login", userData);
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw error.response.data || { message: "Network error" };
   }
 };

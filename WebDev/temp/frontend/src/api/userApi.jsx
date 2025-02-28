@@ -1,6 +1,4 @@
-// src/api/userApi.js
-
-const API_URL = "http://localhost:5000/api/users";
+const API_URL = "http://localhost:5002/api/users"; // Backend URL
 
 export const getUsers = async () => {
   const response = await fetch(API_URL);

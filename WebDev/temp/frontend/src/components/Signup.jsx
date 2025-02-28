@@ -15,24 +15,36 @@ const Signup = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { name, email, password } = credentials;
-    const response = await fetch(`${host}/api/auth/createuser`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name, email, password }),
-    });
+    const { name, email, password, cpassword } = credentials;
 
-    const json = await response.json();
-    console.log(json);
+    // Check if passwords match
+    if (password !== cpassword) {
+      props.showAlert("Passwords do not match", "danger");
+      return;
+    }
 
-    if (json.success) {
-      localStorage.setItem("token", json.authtoken);
-      navigate("/"); // ✅ Correct way to use navigate
-      props.showAlert("Account Created Successfully", "success");
-    } else {
-      props.showAlert("Invalid credentials", "danger");
+    try {
+      const response = await fetch(`${host}/api/auth/createuser`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const json = await response.json();
+      console.log(json);
+
+      if (json.success) {
+        localStorage.setItem("token", json.authtoken);
+        navigate("/"); // ✅ Correct way to use navigate
+        props.showAlert("Account Created Successfully", "success");
+      } else {
+        props.showAlert("Invalid credentials", "danger");
+      }
+    } catch (error) {
+      console.error("Error during signup:", error);
+      props.showAlert("Something went wrong. Please try again.", "danger");
     }
   };
 
@@ -54,6 +66,8 @@ const Signup = (props) => {
             name="name"
             id="name"
             onChange={onChange}
+            value={credentials.name}
+            required
           />
         </div>
         <div className="mb-3">
@@ -66,6 +80,8 @@ const Signup = (props) => {
             name="email"
             id="email"
             onChange={onChange}
+            value={credentials.email}
+            required
           />
         </div>
         <div className="mb-3">
@@ -78,6 +94,7 @@ const Signup = (props) => {
             name="password"
             id="password"
             onChange={onChange}
+            value={credentials.password}
             minLength={5}
             required
           />
@@ -92,6 +109,7 @@ const Signup = (props) => {
             name="cpassword"
             id="cpassword"
             onChange={onChange}
+            value={credentials.cpassword}
             minLength={5}
             required
           />

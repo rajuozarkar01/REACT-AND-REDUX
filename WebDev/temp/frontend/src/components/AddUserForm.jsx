@@ -11,11 +11,12 @@ const AddUserForm = ({ onUserAdded }) => {
     e.preventDefault();
     setLoading(true);
 
-    const token = localStorage.getItem("token");
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/users",
+        "http://localhost:5002/api/users",
         { name, email },
         {
           headers: {

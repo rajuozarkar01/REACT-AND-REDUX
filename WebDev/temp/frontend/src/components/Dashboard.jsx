@@ -22,7 +22,8 @@ import {
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
   const [user, setUser] = useState(null);
   const [recentActivities, setRecentActivities] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -39,26 +40,39 @@ const Dashboard = () => {
 
     const fetchUserData = async () => {
       try {
-        const res = await axios.get("/api/users/me", {
-          headers: { Authorization: `Bearer ${token}` },
+        const token =
+          localStorage.getItem("token") || sessionStorage.getItem("token");
+
+        if (!token) {
+          console.error("No token found, redirecting to login...");
+          return;
+        }
+
+        const response = await axios.get("http://localhost:5002/api/users/me", {
+          headers: {
+            Authorization: `Bearer ${token}`, // ✅ Include token in API requests
+          },
         });
-        setUser(res.data);
-        setEditData({ name: res.data.name, email: res.data.email });
-      } catch (err) {
-        console.error("Error fetching user data:", err);
-        toast.error("Session expired. Please log in again.");
-        localStorage.removeItem("token");
-        navigate("/login");
-      } finally {
-        setLoading(false);
+
+        console.log("User Data Fetched:", response.data);
+        setUser(response.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        if (error.response?.status === 403) {
+          toast.error("Session expired. Please login again.");
+          window.location.href = "/login"; // Redirect to login if unauthorized
+        }
       }
     };
 
     const fetchRecentActivities = async () => {
       try {
-        const res = await axios.get("/api/users/activities", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          "http://localhost:5002/api/users/activities",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         setRecentActivities(res.data);
       } catch (err) {
         console.error("Error fetching activities:", err);
@@ -68,7 +82,7 @@ const Dashboard = () => {
     const fetchUserStats = async () => {
       if (user?.role !== "admin") return; // Prevent non-admins from fetching stats
       try {
-        const res = await axios.get("/api/users/stats", {
+        const res = await axios.get("http://localhost:5002/api/users/stats", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUserStats(res.data);
@@ -84,6 +98,7 @@ const Dashboard = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
     toast.success("Logged out successfully!");
     navigate("/login");
   };
@@ -98,7 +113,7 @@ const Dashboard = () => {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put("/api/users/me", editData, {
+      await axios.put("http://localhost:5002/api/users/me", editData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Profile updated successfully!");

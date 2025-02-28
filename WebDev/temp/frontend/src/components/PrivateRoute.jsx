@@ -5,6 +5,8 @@ import AuthContext from "../context/AuthContext";
 const PrivateRoute = ({ children, adminOnly = false }) => {
   const { user } = useContext(AuthContext);
 
+  console.log("PrivateRoute - Current User:", user);
+
   if (!user) {
     return <Navigate to="/login" replace />;
   }

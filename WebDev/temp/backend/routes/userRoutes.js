@@ -1,4 +1,5 @@
 import express from "express";
+import { authenticateToken, isAdmin } from "../middleware/authMiddleware.js";
 import { body } from "express-validator";
 import {
   registerUser,
@@ -8,7 +9,6 @@ import {
   updateUser,
   deleteUser,
 } from "../controllers/userController.js";
-import { authenticateToken, isAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 

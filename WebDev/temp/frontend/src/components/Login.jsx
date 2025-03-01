@@ -97,31 +97,31 @@ const Login = () => {
         password: formData.password,
       });
 
+      console.log("Login API Response:", res.data); // Debugging
+
       if (res.data.mfaRequired) {
         setMfaStep(true);
         toast.info("Verification code sent to your email.");
       } else {
-        // ✅ Ensure correct user structure
-        const userData = {
-          _id: res.data._id,
-          email: res.data.email,
-          role: res.data.role,
-        };
+        // ✅ Store correct user structure
+        const { user, token, message } = res.data;
 
-        const token = res.data.token;
+        if (!user || !token) {
+          throw new Error("Invalid login response: Missing user or token");
+        }
 
-        console.log("Login Success! User Data:", userData);
+        console.log("Login Success! User Data:", user);
         console.log("Login Success! Token:", token);
 
-        toast.success(res.data.message || "Login successful");
+        toast.success(message || "Login successful");
 
-        // ✅ Store token & user data correctly
+        // ✅ Store token & user correctly
         if (rememberMe) {
           localStorage.setItem("token", token);
-          localStorage.setItem("user", JSON.stringify(userData));
+          localStorage.setItem("user", JSON.stringify(user));
         } else {
           sessionStorage.setItem("token", token);
-          sessionStorage.setItem("user", JSON.stringify(userData));
+          sessionStorage.setItem("user", JSON.stringify(user));
         }
 
         setFormData({ email: "", password: "", verificationCode: "" });

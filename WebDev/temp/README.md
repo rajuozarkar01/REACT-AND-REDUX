@@ -144,3 +144,34 @@ _Network error 'please check your internet connection and come again._
    SyntaxError: The requested module '../controllers/userController.js' does not provide an export named 'updateUse updateUser,_
    **updaet**
    _Your userController.js is missing the updateUser function, but your userRoutes.js is trying to import it_
+
+**user role logic update in backend** _01-03-25::11:36_
+**user role logic update in backend**
+\*To build a solid authentication system, we should focus on these key backend files:
+
+3. _authController.js – Handle login, registration, and token generation._
+4. _authMiddleware.js – Ensure authentication and role-based access control._
+5. _user.js (Model) – Ensure the schema includes user roles._
+6. _authRoutes.js – Define authentication-related API routes._
+   Here are the updated backend files with improvements in authentication logic, error handling, and user response structure.
+
+### Summary of Updates:
+
+1. **authController.js**
+
+   - Returns a structured response containing `token` and `user` details.
+   - Ensures `role` is included in the response.
+
+2. **authMiddleware.js**
+
+   - Improved error handling for token authentication.
+   - Ensures user role is available in `req.user`.
+
+3. **user.js (Model)**
+
+   - Added `role` field with "user" as default and support for "admin".
+
+4. **authRoutes.js**
+   - Simplified the route structure.
+
+Now, test your login functionality again. If the token is properly stored and the user data structure is correct, your authentication flow should work as expected. 🚀

@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
+const JWT_EXPIRES_IN = "1h";
 
 /**
  * @desc    Authenticate user & get token
@@ -24,11 +25,20 @@ export const loginUser = async (req, res) => {
     }
 
     const token = jwt.sign({ _id: user._id, role: user.role }, JWT_SECRET, {
-      expiresIn: "1h",
+      expiresIn: JWT_EXPIRES_IN,
     });
 
-    res.status(200).json({ message: "Login successful", token });
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (error) {
-    res.status(500).json({ message: "Error logging in", error });
+    res.status(500).json({ message: "Error logging in", error: error.message });
   }
 };

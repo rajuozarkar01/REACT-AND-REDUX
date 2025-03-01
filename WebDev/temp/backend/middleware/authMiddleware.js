@@ -18,28 +18,22 @@ export const authenticateToken = async (req, res, next) => {
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    // Fetch user details from DB (excluding password)
-    const user = await User.findById(decoded._id || decoded.id).select(
-      "-password"
-    );
+    const user = await User.findById(decoded._id).select("-password");
     if (!user) {
       return res
         .status(401)
         .json({ message: "Invalid token. User does not exist." });
     }
 
-    req.user = user; // Attach user object to request
+    req.user = user;
     next();
   } catch (error) {
-    console.error("JWT Authentication Error:", error.message);
-
     let errorMessage = "Authentication failed.";
     if (error.name === "TokenExpiredError") {
       errorMessage = "Token expired. Please log in again.";
     } else if (error.name === "JsonWebTokenError") {
       errorMessage = "Invalid token.";
     }
-
     return res.status(403).json({ message: errorMessage });
   }
 };
@@ -48,13 +42,8 @@ export const authenticateToken = async (req, res, next) => {
  * Middleware to check if the user has an admin role
  */
 export const isAdmin = (req, res, next) => {
-  if (!req.user) {
-    return res.status(401).json({ message: "Authentication required." });
-  }
-
-  if (req.user.role !== "admin") {
+  if (!req.user || req.user.role !== "admin") {
     return res.status(403).json({ message: "Access denied. Admins only." });
   }
-
   next();
 };

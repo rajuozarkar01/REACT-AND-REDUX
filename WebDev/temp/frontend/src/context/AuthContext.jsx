@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
       try {
         const parsedUser = JSON.parse(userData);
 
-        // ✅ Ensure user data contains required properties
         if (
           parsedUser &&
           parsedUser._id &&
@@ -28,26 +27,30 @@ export const AuthProvider = ({ children }) => {
           setUser(parsedUser);
         } else {
           console.error("Invalid user data structure:", parsedUser);
-          setUser(null);
-          localStorage.removeItem("user");
-          sessionStorage.removeItem("user");
+          clearStorage();
         }
       } catch (error) {
         console.error("Error parsing user data:", error);
-        setUser(null);
-        localStorage.removeItem("user");
-        sessionStorage.removeItem("user");
+        clearStorage();
       }
     } else {
       setUser(null);
     }
   }, []);
 
+  const clearStorage = () => {
+    setUser(null);
+    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+  };
+
   const login = (userData, token, rememberMe) => {
     console.log("Saving User Data:", userData);
     console.log("Saving Token:", token);
 
-    if (userData && token) {
+    if (userData && token && userData._id && userData.email && userData.role) {
       if (rememberMe) {
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(userData));
@@ -63,11 +66,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     console.log("Logging Out...");
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("user");
-    setUser(null);
+    clearStorage();
   };
 
   return (

@@ -5,6 +5,20 @@ import User from "../models/user.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 
+export const getRecentActivities = async (req, res) => {
+  try {
+    // Fetch activities from database (replace with actual logic)
+    const activities = await ActivityModel.find()
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    res.json(activities);
+  } catch (error) {
+    console.error("Error fetching activities:", error);
+    res.status(500).json({ message: "Failed to fetch activities" });
+  }
+};
+
 /**
  * @desc    Register a new user
  * @route   POST /api/users/register

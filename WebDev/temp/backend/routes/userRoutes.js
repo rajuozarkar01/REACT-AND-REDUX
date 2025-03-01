@@ -8,12 +8,16 @@ import {
   getUserById,
   updateUser,
   deleteUser,
+  getRecentActivities, // ✅ Import new controller function
 } from "../controllers/userController.js";
 
 const router = express.Router();
 
 // ✅ Get User (Authenticated users can fetch their own data)
 router.get("/:id", authenticateToken, getUserById);
+
+// ✅ Add Route to Fetch Recent Activities
+router.get("/activities", authenticateToken, isAdmin, getRecentActivities);
 
 /**
  * @route   POST /api/users/register

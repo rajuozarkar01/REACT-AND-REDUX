@@ -11,8 +11,8 @@ _MongoDB Shell installed_
 2. Open MongoDB Shell (mongosh):
    _Open a terminal or command prompt._
    _Run the mongosh command with your connection string_
-   **for now here it is**
-   _mongosh "mongodb+srv://starline.sygqc.mongodb.net/myDatabase" --apiVersion 1 --username pcgamedec2024 --password Starline@12_
+   **for now here it is** **updated on 01-03-2025**
+   _mongosh "mongodb+srv://starline.sygqc.mongodb.net/" --apiVersion 1 --username starline_
 3. _Run MongoDB Commands:_
    _To check if a user with a specific email exists:_
    _db.users.findOne({ email: "pcgamedec2024@gmail.com" })_

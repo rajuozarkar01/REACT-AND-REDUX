@@ -1,5 +1,6 @@
 import express from "express";
 import { authenticateToken, isAdmin } from "../middleware/authMiddleware.js";
+import { canEditUser } from "../middleware/canEditUser.js"; // ✅ New Middleware
 import { body } from "express-validator";
 import {
   registerUser,
@@ -8,16 +9,46 @@ import {
   getUserById,
   updateUser,
   deleteUser,
-  getRecentActivities, // ✅ Import new controller function
+  getRecentActivities,
 } from "../controllers/userController.js";
 
 const router = express.Router();
 
-// ✅ Get User (Authenticated users can fetch their own data)
-router.get("/:id", authenticateToken, getUserById);
+/** ===========================
+ *  📌 ADMIN ROUTES (PRIVATE)
+ *  =========================== */
 
-// ✅ Add Route to Fetch Recent Activities
+/**
+ * @route   GET /api/users/activities
+ * @desc    Get recent activities (Admin Only)
+ * @access  Private (Admin)
+ */
 router.get("/activities", authenticateToken, isAdmin, getRecentActivities);
+
+/**
+ * @route   GET /api/users
+ * @desc    Get all users (Admin Only)
+ * @access  Private (Admin)
+ */
+router.get("/", authenticateToken, isAdmin, getUsers);
+
+/**
+ * @route   DELETE /api/users/:id
+ * @desc    Delete a user (Admin only, cannot delete self)
+ * @access  Private (Admin)
+ */
+router.delete("/:id", authenticateToken, isAdmin, async (req, res) => {
+  if (req.user._id.toString() === req.params.id) {
+    return res
+      .status(400)
+      .json({ message: "Admins cannot delete themselves." });
+  }
+  deleteUser(req, res);
+});
+
+/** ===========================
+ *  📌 AUTHENTICATION ROUTES (PUBLIC)
+ *  =========================== */
 
 /**
  * @route   POST /api/users/register
@@ -54,12 +85,9 @@ router.post(
   loginUser
 );
 
-/**
- * @route   GET /api/users
- * @desc    Get all users (Admin Only)
- * @access  Private (Admin)
- */
-router.get("/", authenticateToken, isAdmin, getUsers);
+/** ===========================
+ *  📌 USER ROUTES (PRIVATE)
+ *  =========================== */
 
 /**
  * @route   GET /api/users/:id
@@ -67,7 +95,6 @@ router.get("/", authenticateToken, isAdmin, getUsers);
  * @access  Private (User or Admin)
  */
 router.get("/:id", authenticateToken, async (req, res, next) => {
-  // Allow users to access their own profile or admins to access any profile
   if (req.user._id.toString() === req.params.id || req.user.role === "admin") {
     return getUserById(req, res, next);
   }
@@ -82,6 +109,7 @@ router.get("/:id", authenticateToken, async (req, res, next) => {
 router.put(
   "/:id",
   authenticateToken,
+  canEditUser, // ✅ Middleware handles access control
   [
     body("name")
       .optional()
@@ -90,30 +118,7 @@ router.put(
     body("email").optional().isEmail().withMessage("Invalid email address"),
     body("role").optional().isIn(["user", "admin"]).withMessage("Invalid role"),
   ],
-  async (req, res, next) => {
-    // Allow users to update their own profile or admins to update any profile
-    if (
-      req.user._id.toString() === req.params.id ||
-      req.user.role === "admin"
-    ) {
-      return updateUser(req, res, next);
-    }
-    return res.status(403).json({ message: "Access denied." });
-  }
+  updateUser
 );
-
-/**
- * @route   DELETE /api/users/:id
- * @desc    Delete a user (Admin only, cannot delete self)
- * @access  Private (Admin)
- */
-router.delete("/:id", authenticateToken, isAdmin, async (req, res) => {
-  if (req.user._id.toString() === req.params.id) {
-    return res
-      .status(400)
-      .json({ message: "Admins cannot delete themselves." });
-  }
-  deleteUser(req, res);
-});
 
 export default router;

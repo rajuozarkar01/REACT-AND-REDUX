@@ -67,15 +67,24 @@ const Dashboard = () => {
 
     const fetchRecentActivities = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:5002/api/users/activities",
+        const token =
+          localStorage.getItem("token") || sessionStorage.getItem("token"); // Ensure consistency
+
+        console.log("📡 Fetching recent activities with token:", token);
+
+        const response = await axios.get(
+          "http://localhost:5002/api/users/activities", // ✅ Correct API route
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
-        setRecentActivities(res.data);
-      } catch (err) {
-        console.error("Error fetching activities:", err);
+
+        console.log("✅ Activities fetched:", response.data);
+        setRecentActivities(response.data);
+      } catch (error) {
+        console.error("❌ Error fetching activities:", error);
       }
     };
 

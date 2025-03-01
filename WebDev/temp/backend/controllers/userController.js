@@ -5,17 +5,32 @@ import User from "../models/user.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 
+import Activity from "../models/activityModel.js"; // Ensure correct path
+
 export const getRecentActivities = async (req, res) => {
+  console.log("🛠️ Checking req.user in getRecentActivities:", req.user);
+
+  if (!req.user || !req.user._id) {
+    console.error("❌ ERROR: req.user is undefined or missing _id");
+    return res
+      .status(400)
+      .json({ message: "Authentication error: User not found." });
+  }
+
   try {
-    // Fetch activities from database (replace with actual logic)
-    const activities = await ActivityModel.find()
+    const activities = await Activity.find({ userId: req.user._id })
       .sort({ createdAt: -1 })
       .limit(10);
 
-    res.json(activities);
+    if (!activities.length) {
+      console.warn("⚠️ No activities found for user:", req.user._id);
+      return res.status(404).json({ message: "No recent activities found." });
+    }
+
+    res.status(200).json(activities);
   } catch (error) {
-    console.error("Error fetching activities:", error);
-    res.status(500).json({ message: "Failed to fetch activities" });
+    console.error("❌ Error fetching recent activities:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -87,9 +102,11 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ _id: user._id, role: user.role }, JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { _id: user._id.toString(), role: user.role },
+      process.env.JWT_SECRET, // ✅ Ensures secret comes from env
+      { expiresIn: "1h" } // ✅ Token expires in 1 hour
+    );
 
     // ✅ Return full user object
     res.status(200).json({

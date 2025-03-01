@@ -4,6 +4,18 @@ const API = axios.create({
   baseURL: "http://localhost:5002/api/users", // Backend URL
 });
 
+// Get Recent Activities (Admin Only)
+export const getRecentActivities = async (token) => {
+  try {
+    const response = await API.get("/activities", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Network error" };
+  }
+};
+
 // Register User
 export const registerUser = async (userData) => {
   try {

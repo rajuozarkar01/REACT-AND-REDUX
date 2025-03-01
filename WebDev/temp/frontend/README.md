@@ -1,5 +1,7 @@
 **Steps to start mongoDB**
 ✅ Step 1: Get Your MongoDB Atlas Connection String
+**on Shell**
+**mongosh "mongodb+srv://starline.sygqc.mongodb.net/" --apiVersion 1 --username starline**
 Go to MongoDB Atlas and log in.
 Select your database cluster.
 Click "Connect" → "Connect your application".(compass/atlas, etc.)

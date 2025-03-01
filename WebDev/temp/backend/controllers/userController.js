@@ -94,21 +94,33 @@ export const loginUser = async (req, res) => {
 };
 
 /**
- * @desc    Get user by ID
+ * @desc    Get user by ID or current authenticated user
  * @route   GET /api/users/:id
- * @access  Private
+ * @access  Private (User/Admin)
  */
 export const getUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select("-password");
-    if (!user) return res.status(404).json({ message: "User not found" });
+    let userId = req.params.id;
+
+    // ✅ If the client requests "me", fetch the logged-in user's data
+    if (userId === "me") {
+      userId = req.user._id; // Extract from authenticated user
+    }
+
+    // ✅ Validate MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid User ID" });
+    }
+
+    const user = await User.findById(userId).select("-password"); // Exclude password
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     res.status(200).json(user);
   } catch (error) {
     console.error("Error fetching user:", error);
-    res
-      .status(500)
-      .json({ message: "Error fetching user", error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 

@@ -12,6 +12,9 @@ import {
 
 const router = express.Router();
 
+// ✅ Get User (Authenticated users can fetch their own data)
+router.get("/:id", authenticateToken, getUserById);
+
 /**
  * @route   POST /api/users/register
  * @desc    Register a new user

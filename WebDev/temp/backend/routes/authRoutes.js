@@ -1,14 +1,40 @@
-import express from "express";
-import { loginUser } from "../controllers/authController.js";
-
+const express = require("express");
+const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 const router = express.Router();
 
-// Public Route: Login
-router.post("/login", loginUser);
+router.post("/refresh-token", async (req, res) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken)
+    return res
+      .status(403)
+      .json({ success: false, message: "Refresh Token required" });
 
-export default router;
+  try {
+    // Verify refresh token
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
 
-// ✅ Example Protected Route (If needed in the future)
-// router.get("/protected-route", authenticateToken, (req, res) => {
-//   res.json({ message: "You are authenticated!", user: req.user });
-// });
+    // Find user with refresh token
+    const user = await User.findOne({ _id: decoded._id, refreshToken });
+    if (!user)
+      return res
+        .status(403)
+        .json({ success: false, message: "Invalid refresh token" });
+
+    // Generate new access token
+    const accessToken = jwt.sign(
+      { _id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+
+    res.json({ success: true, accessToken });
+  } catch (error) {
+    console.error("Refresh token error:", error);
+    res
+      .status(403)
+      .json({ success: false, message: "Invalid or expired refresh token" });
+  }
+});
+
+module.exports = router;

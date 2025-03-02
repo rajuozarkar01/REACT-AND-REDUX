@@ -1,10 +1,11 @@
 import express from "express";
 import { authenticateToken, isAdmin } from "../middleware/authMiddleware.js";
-import { canEditUser } from "../middleware/canEditUser.js"; // ✅ New Middleware
+import { canEditUser } from "../middleware/canEditUser.js"; // ✅ Access control middleware
 import { body } from "express-validator";
 import {
   registerUser,
-  loginUser,
+  login,
+  logout,
   getUsers,
   getUserById,
   updateUser,
@@ -37,14 +38,7 @@ router.get("/", authenticateToken, isAdmin, getUsers);
  * @desc    Delete a user (Admin only, cannot delete self)
  * @access  Private (Admin)
  */
-router.delete("/:id", authenticateToken, isAdmin, async (req, res) => {
-  if (req.user._id.toString() === req.params.id) {
-    return res
-      .status(400)
-      .json({ message: "Admins cannot delete themselves." });
-  }
-  deleteUser(req, res);
-});
+router.delete("/:id", authenticateToken, isAdmin, deleteUser);
 
 /** ===========================
  *  📌 AUTHENTICATION ROUTES (PUBLIC)
@@ -82,8 +76,15 @@ router.post(
     body("email").isEmail().withMessage("Invalid email address"),
     body("password").notEmpty().withMessage("Password is required"),
   ],
-  loginUser
+  login
 );
+
+/**
+ * @route   POST /api/users/logout
+ * @desc    Logout user (Invalidate refresh token)
+ * @access  Private (Authenticated users only)
+ */
+router.post("/logout", authenticateToken, logout);
 
 /** ===========================
  *  📌 USER ROUTES (PRIVATE)
@@ -94,7 +95,7 @@ router.post(
  * @desc    Get a single user by ID
  * @access  Private (User or Admin)
  */
-router.get("/:id", authenticateToken, async (req, res, next) => {
+router.get("/:id", authenticateToken, (req, res, next) => {
   if (req.user._id.toString() === req.params.id || req.user.role === "admin") {
     return getUserById(req, res, next);
   }

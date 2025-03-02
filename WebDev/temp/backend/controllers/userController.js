@@ -2,6 +2,8 @@ import mongoose from "mongoose"; // ✅ Import mongoose
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
+import { generateToken, generateRefreshToken } from "../utils/generateToken.js";
+
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 
@@ -87,41 +89,44 @@ export const registerUser = async (req, res) => {
  * @route   POST /api/users/login
  * @access  Public
  */
-export const loginUser = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+export const login = async (req, res) => {
+  console.log("🔹 Login function called"); // Debugging log
 
+  const { email, password } = req.body;
+
+  try {
     const user = await User.findOne({ email });
+
     if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      console.log("❌ User not found");
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // Use bcrypt.compare to verify the hashed password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      console.log("❌ Password does not match");
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    const token = jwt.sign(
-      { _id: user._id.toString(), role: user.role },
-      process.env.JWT_SECRET, // ✅ Ensures secret comes from env
-      { expiresIn: "1h" } // ✅ Token expires in 1 hour
-    );
+    console.log("✅ User authenticated:", user.email);
 
-    // ✅ Return full user object
-    res.status(200).json({
-      message: "Login successful",
+    const token = generateToken(user._id);
+    const refreshToken = generateRefreshToken(user._id);
+
+    console.log("🔑 Access Token:", token);
+    console.log("🔄 Refresh Token:", refreshToken);
+
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
       token,
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
+      refreshToken,
     });
   } catch (error) {
-    console.error("Error logging in:", error);
-    res.status(500).json({ message: "Error logging in", error: error.message });
+    console.error("❌ Login Error:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -209,6 +214,32 @@ export const updateUser = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error updating user", error: error.message });
+  }
+};
+
+/**
+ * @route   POST /api/users/logout
+ * @desc    Logout user (clears refresh token)
+ * @access  Private (Authenticated users only)
+ */
+export const logout = async (req, res) => {
+  try {
+    // Clear refresh token (if stored in DB)
+    const user = await User.findOne({ _id: req.user._id });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    user.refreshToken = null; // Clear stored refresh token
+    await user.save();
+
+    res.json({ success: true, message: "Logged out successfully" });
+  } catch (error) {
+    console.error("❌ Logout error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 

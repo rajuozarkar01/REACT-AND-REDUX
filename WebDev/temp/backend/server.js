@@ -1,12 +1,12 @@
+// Import Routes
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-
-// Import Routes
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js"; // ✅ Added Order Routes
+console.log("🚀 Backend Server is Restarting...");
 
 dotenv.config();
 const app = express();
@@ -21,15 +21,17 @@ app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes); // ✅ Register Order Routes
 
 // ✅ Database Connection
-const MONGO_URI = process.env.MONGO_URI
-  .replace("${MONGO_USER}", encodeURIComponent(process.env.MONGO_USER))
-  .replace("${MONGO_PASSWORD}", encodeURIComponent(process.env.MONGO_PASSWORD));
+const MONGO_URI = process.env.MONGO_URI;
+
+console.log("✅ JWT_SECRET:", process.env.JWT_SECRET || "Not Found");
+console.log(
+  "✅ JWT_REFRESH_SECRET:",
+  process.env.JWT_REFRESH_SECRET || "Not Found"
+);
+console.log("✅ MONGO_URI:", process.env.MONGO_URI || "Not Found");
 
 mongoose
-  .connect(MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(MONGO_URI)
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 

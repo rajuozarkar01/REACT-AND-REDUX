@@ -1,40 +1,15 @@
-const express = require("express");
-const jwt = require("jsonwebtoken");
-const User = require("../models/user");
-const router = express.Router();
+import { Router } from "express";
+import { authenticateToken } from "../middleware/authMiddleware.js"; // ✅ Fixed middleware name
+import {
+  login,
+  logout,
+  refreshAccessToken,
+} from "../controllers/authController.js";
 
-router.post("/refresh-token", async (req, res) => {
-  const { refreshToken } = req.body;
-  if (!refreshToken)
-    return res
-      .status(403)
-      .json({ success: false, message: "Refresh Token required" });
+const router = Router();
 
-  try {
-    // Verify refresh token
-    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+router.post("/login", login);
+router.post("/refresh-token", refreshAccessToken);
+router.post("/logout", authenticateToken, logout); // ✅ Using correct middleware
 
-    // Find user with refresh token
-    const user = await User.findOne({ _id: decoded._id, refreshToken });
-    if (!user)
-      return res
-        .status(403)
-        .json({ success: false, message: "Invalid refresh token" });
-
-    // Generate new access token
-    const accessToken = jwt.sign(
-      { _id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "15m" }
-    );
-
-    res.json({ success: true, accessToken });
-  } catch (error) {
-    console.error("Refresh token error:", error);
-    res
-      .status(403)
-      .json({ success: false, message: "Invalid or expired refresh token" });
-  }
-});
-
-module.exports = router;
+export default router;
